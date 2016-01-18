@@ -31,36 +31,53 @@ parameter = struct('learning_rate',[],'alfa',[],'lambda',[],'epsilon',[],'method
 %value epsilon use for initialize random weights
 parameter.epsilon = 0.12;
 
+prompt = {'parameter.method:','parameter.learning_rate:','parameter.alfa:'...
+    ,'parameter.lambda:','validation_check:','iteration:','samples:','L:'};
+dlg_title = 'Input';
+num_lines = 1;
+defaultans = {'1','0.3','0.9','0','10','100','1000','3'};
+answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
+
+
 temp=strcat('Enter the Learning method(1 for Batch method or 0 for Online method) \n');
-parameter.method = input(temp);
+% parameter.method = input(temp);
+parameter.method =answer{1};
+
 %set paremeters
 temp=strcat('Enter the learning rate value \n');
-parameter.learning_rate = input(temp);
+% parameter.learning_rate = input(temp);
+parameter.learning_rate =answer{2};
+
 %learning_rate=0.3;
-
 temp=strcat('Enter the momentum value \n');
-parameter.alfa = input(temp);
-
+% parameter.alfa = input(temp);
+parameter.alfa =answer{3};
 
 temp=strcat('Enter the regularization value \n');
-parameter.lambda = input(temp);
+% parameter.lambda = input(temp);
+parameter.lambda =answer{4};
 
 temp=strcat('Enter the validation check value \n');
-validation_check = input(temp);
+% validation_check = input(temp);
+validation_check =answer{5};
 
 % epoch number
 temp=strcat('Enter the iteration value \n');
-iteration = input(temp);
+% iteration = input(temp);
+iteration =answer{6};
 
 % Number of samples
 temp=strcat('Enter the number of samples \n');
-samples = input(temp);
+% samples = input(temp);
+samples =answer{7};
 
 prompt = 'Enter the number of layers\n';
-L = input(prompt);
-
+% L = input(prompt);
+L =answer{8};
+trrr= char(L);
+%Mohsen
 % set layers parameters
-for c=1:L
+for c=1:trrr
  
     if(c==1)
         temp=strcat('Enter numbers of INPUTS (number of neuron in first layer)  \n');
