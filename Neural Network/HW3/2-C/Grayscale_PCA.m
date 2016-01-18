@@ -8,23 +8,16 @@ cd 'F:\Documents\MATLAB\Neural Network\HW3\2-C';
 %%extract chaneles and eigs
 %seprate chanels
 for i=1:80
-    Red = Data.train_image{i}(:,:,1);
-    Green =  Data.train_image{i}(:,:,2);
-    Blue = Data.train_image{i}(:,:,3);
-    
+    %convert RGB to Grayscale
+    Data.train_image{i} = rgb2gray(Data.train_image{i});
     %reshape Red matrix to the vector
-    [height,width] = size(Red);
-    Data.red_im_vector{i} = reshape(Red,[1,height*width]);
-    Data.blue_im_vector{i} = reshape(Blue,[1,height*width]);
-    Data.green_im_vector{i} = reshape(Blue,[1,height*width]);
-    
+    [height,width] = size(Data.train_image{i});
+    Data.im_vector{i} = reshape(Data.train_image{i},[1,height*width]);
     %claculte PCA eigvector and eigvalue for all chanels
-    [ Data.red_eigvector{i} ,  Data.red_eigvalue{i}] = PCA_(Data.red_im_vector{i}, 30);
-    [ Data.blue_eigvector{i} ,  Data.blue_eigvalue{i}] = PCA_(Data.blue_im_vector{i}, 30);
-    [ Data.green_eigvector{i} ,  Data.green_eigvalue{i}] = PCA_(Data.green_im_vector{i}, 30);
+    [ Data.eigvector{i} ,  Data.eigvalue{i}] = PCA_(Data.im_vector{i}, 30);
     
     %feature extarction
-    Data.red_ytrn{i} = (Data.red_im_vector{i}*Data.red_eigvector{i} )';
+    Data.ytrn{i} = (Data.im_vector{i}*Data.eigvector{i} )';
 end
 %%
 
