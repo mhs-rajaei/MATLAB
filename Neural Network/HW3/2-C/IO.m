@@ -24,6 +24,7 @@ for Q=1:number_of_samples
     
     %% normalize method 1
     myImg = im2double(A);
+%     myImgNorm = featureNormalize(myImg);
     % Normalize the Image:
     myRange = getrangefromclass(myImg(1));
     newMax = myRange(2);
@@ -50,6 +51,7 @@ for Q=1:number_of_samples
     
     %% normalize method 1
     myImg = im2double(A);
+%     myImgNorm = featureNormalize(myImg);
     % Normalize the Image:
     myRange = getrangefromclass(myImg(1));
     newMax = myRange(2);
