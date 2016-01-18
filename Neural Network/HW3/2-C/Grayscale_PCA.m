@@ -11,13 +11,13 @@ for i=1:80
     %convert RGB to Grayscale
     Data.train_image{i} = rgb2gray(Data.train_image{i});
     %reshape Red matrix to the vector
-    [height,width] = size(Data.train_image{i});
-    Data.im_vector{i} = reshape(Data.train_image{i},[1,height*width]);
+%     [height,width] = size(Data.train_image{i});
+%     Data.im_vector{i} = reshape(Data.train_image{i},[1,height*width]);
     %claculte PCA eigvector and eigvalue for all chanels
-    [ Data.eigvector{i} ,  Data.eigvalue{i}] = PCA_(Data.im_vector{i}, 30);
+    [ Data.eigvector{i} ,  Data.eigvalue{i}] = PCA_(Data.train_image{i}, 30);
     
     %feature extarction
-    Data.ytrn{i} = (Data.im_vector{i}*Data.eigvector{i} )';
+    Data.ytrn{i} = (Data.train_image{i}*Data.eigvector{i} )';
 end
 %%
 
