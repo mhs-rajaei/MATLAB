@@ -35,7 +35,7 @@ prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','
     ,'lambda:(Regularization coefficient','Validation check:','Iteration:','Samples:','Number of layers:','Batch size: '};
 dlg_title = 'Input';
 num_lines = 1;
-defaultans = {'1','0.3','0.9','0','10','100','1000','3','20'};
+defaultans = {'1','0.3','0','0','10','100','1000','3','20'};
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
 
 

@@ -28,7 +28,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             else
                 layer(c).z = (layer(c-1).a(:))'*(layer(c).wts(1:end-1,:))+(layer(c).bias*layer(c).wts(end,:));
             end
-        
+            
             if isnan(layer(c).z)
                 fprintf('\n');
                 fprintf('\n');
@@ -64,7 +64,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             delta_W = (-parameter.learning_rate) .* (layer(L-1).a' * layer(L).delta) ;
             delta_theta = layer(L).delta ;
         end
-       
+        
         % Compute Other Delta's
         up_ind=L-1;
         while(up_ind>1)
@@ -134,7 +134,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             up_ind = up_ind-1;
         end
         
-      
+        
         
     end
     
@@ -178,6 +178,33 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     % Compute Overal MSE
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;
     
+    if epoch >1
+        legend('show');
+        % Create multiple lines using matrix input to plot
+        plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
+        set(plot1,'DisplayName','Accuracy Train','Color',[0 1 0]);
+        
+        plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
+        set(plot2,'DisplayName','Accuracy Test','Color',[1 0 0]);
+        
+        plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
+        set(plot3,'DisplayName','Accuracy Validation','Color',[0 0 0.5]);
+        legend('show');
+        set(legend,...
+            'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
+        drawnow
+    end
+    
+    % adaptive learning rate
+    if epoch>1
+        if (Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<1
+            parameter.learning_rate = 1.05*parameter.learning_rate;
+        elseif ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))>=1) & ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<=1.04)
+            parameter.learning_rate = parameter.learning_rate;
+        else
+            parameter.learning_rate = 0.7*parameter.learning_rate;
+        end
+    end
     %% Validation check
     if epoch == 1
         validation = Accuracy_Validation(epoch);
@@ -195,7 +222,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     %%
 end
 
-    displayData(layer(L).wts(:,end-1));
+displayData(layer(L).wts(:,end-1));
 
 toc;
 
