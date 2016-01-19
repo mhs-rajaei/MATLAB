@@ -62,12 +62,12 @@ mlp.trainParam.max_fail=200;% maximum failof training and validation set
 view(mlp);% shows the MLP
 %% Train the Network
 [mlp,tr] = train(mlp,MLP_Inputs',Target');
-%% Test the Network
-y = mlp(MLP_Inputs');
-e = gsubtract(Target',y);
-performance = perform(mlp,Target',y);
-tind = vec2ind(Target');
-yind = vec2ind(y);
-percentErrors = sum(tind ~= yind)/numel(tind);
-
+% %% Test the Network
+% y = mlp(MLP_Inputs');
+% e = gsubtract(Target',y);
+% performance = perform(mlp,Target',y);
+% tind = vec2ind(Target');
+% yind = vec2ind(y);
+% percentErrors = sum(tind ~= yind)/numel(tind);
+% 
 
