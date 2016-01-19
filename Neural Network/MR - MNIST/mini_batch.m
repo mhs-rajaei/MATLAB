@@ -16,13 +16,13 @@ index = 1;
 MSE = zeros(1,iteration);
 layer(L).MSE = zeros(10,samples);
 % layer(L).MSE2 = zeros(10,samples);
-
+counter = 0;
 for epoch=1:iteration % forward and update weight's in number of  iterations
     delta_W=zeros();
     delta_theta=zeros();
     for num_in=1:samples
         %% =========== Forward =============
-        
+        counter = counter +1;
         target = Target(labels(num_in),layer(L).Size);
         
         for c=2:L
@@ -127,41 +127,37 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             up_ind = up_ind-1;
         end
         
+        
+        if counter == batch_size
+            if parameter.method == 1 % batch method
+                for i=2:L
+                    % Update Weight's
+                    layer(i).wts(1:end-1,:) =  layer(i).wts(1:end-1,:) + (1/batch_size) *layer(i).big_delta(1:end-1,:) + ...
+                        parameter.lambda * parameter.learning_rate * (layer(i).wts(1:end-1,:)) + ...
+                        (parameter.alfa  *  layer(i).delta_W_last(1:end-1,:));
+                    %                 % Last DELTA W Weights
+                    layer(i).delta_W_last(1:end-1,:) = (1/batch_size) *layer(i).big_delta(1:end-1,:);
+                    layer(i).big_delta= zeros(layer(i-1).Size+1,layer(i).Size);
+                    
+                    %                 layer(i).wts(1:end-1,:) = (1/samples) *layer(i).big_delta(1:end-1,:) - ...
+                    %                     parameter.lambda * parameter.learning_rate * (layer(i).wts(1:end-1,:)) +  layer(i).wts(1:end-1,:);
+                    % Update Bias
+                    layer(i).wts(end,:) =layer(i).wts(end,:) + (1/batch_size)*layer(i).big_delta_bias +...
+                        (parameter.alfa  *  layer(i).delta_W_last(end,:));
+                    %               % Last DELTA W Weights
+                    layer(i).delta_W_last(end,:) = (1/batch_size)*layer(i).big_delta_bias;
+                    layer(i).big_delta_bias=zeros(1,layer(i).Size);
+                    %                 layer(i).wts(end,:) = (1/samples)*layer(i).big_delta_bias +layer(i).wts(end,:) ;
+                    
+                end
+            end
+            counter = 0;
+        end
+        
     end
     
     %%
-    if parameter.method == 1 % batch method
-        for i=2:L
-            %             if epoch>1
-            %                 if (Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<1
-            %                     parameter.learning_rate = 1.05*parameter.learning_rate;
-            %                 elseif ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))>=1) and ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<=1.04)
-            %                     parameter.learning_rate = parameter.learning_rate;
-            %                 else
-            %                     parameter.learning_rate = 0.7*parameter.learning_rate;
-            %                 end
-            %             end
-            
-            % Update Weight's
-            layer(i).wts(1:end-1,:) =  layer(i).wts(1:end-1,:) + (1/samples) *layer(i).big_delta(1:end-1,:) + ...
-                parameter.lambda * parameter.learning_rate * (layer(i).wts(1:end-1,:)) + ...
-                (parameter.alfa  *  layer(i).delta_W_last(1:end-1,:));
-            %                 % Last DELTA W Weights
-            layer(i).delta_W_last(1:end-1,:) = (1/samples) *layer(i).big_delta(1:end-1,:);
-            layer(i).big_delta= zeros(layer(i-1).Size+1,layer(i).Size);
-            
-            %                 layer(i).wts(1:end-1,:) = (1/samples) *layer(i).big_delta(1:end-1,:) - ...
-            %                     parameter.lambda * parameter.learning_rate * (layer(i).wts(1:end-1,:)) +  layer(i).wts(1:end-1,:);
-            % Update Bias
-            layer(i).wts(end,:) =layer(i).wts(end,:) + (1/samples)*layer(i).big_delta_bias +...
-                (parameter.alfa  *  layer(i).delta_W_last(end,:));
-            %               % Last DELTA W Weights
-            layer(i).delta_W_last(end,:) = (1/samples)*layer(i).big_delta_bias;
-            layer(i).big_delta_bias=zeros(1,layer(i).Size);
-            %                 layer(i).wts(end,:) = (1/samples)*layer(i).big_delta_bias +layer(i).wts(end,:) ;
-            
-        end
-    end
+    
     
     %% TEST & Accuracy & MSE
     
@@ -194,7 +190,6 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             parameter.learning_rate = 0.7*parameter.learning_rate;
         end
     end
-    
     %% Validation check
     if epoch == 1
         validation = Accuracy_Validation(epoch);
@@ -206,7 +201,6 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         validation = Accuracy_Validation(epoch);
         index = 0;
     end
-    
     
     if index == validation_check
         break;
