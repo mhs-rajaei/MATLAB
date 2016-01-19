@@ -32,32 +32,33 @@ parameter = struct('learning_rate',[],'alfa',[],'lambda',[],'epsilon',[],'method
 parameter.epsilon = 0.12;
 
 prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','alfa:(Momentum coefficient)'...
-    ,'lambda:(Regularization coefficient','Validation check:','Iteration:','Samples:','Number of layers:','Batch size: '};
+    ,'lambda:(Regularization coefficient','Validation check:','Iteration:','Samples:',...
+    'Number of layers:','Batch size: ','Enter Train(1) or Train2_orig(2) or mini batch(3) or Train7(7) '};
 dlg_title = 'Input';
 num_lines = 1;
 defaultans = {'1','0.3','0','0','10','100','1000','3','20'};
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
 
 
-temp=strcat('Enter the Learning method(1 for Batch method or 0 for Online method) \n');
+% temp=strcat('Enter the Learning method(1 for Batch method or 0 for Online method) \n');
 % parameter.method = input(temp);
 parameter.method =str2num(answer{1});
 
 %set paremeters
-temp=strcat('Enter the learning rate value \n');
+% temp=strcat('Enter the learning rate value \n');
 % parameter.learning_rate = input(temp);
 parameter.learning_rate =str2num(answer{2});
 
 %learning_rate=0.3;
-temp=strcat('Enter the momentum value \n');
+% temp=strcat('Enter the momentum value \n');
 % parameter.alfa = input(temp);
 parameter.alfa =str2num(answer{3});
 
-temp=strcat('Enter the regularization value \n');
+% temp=strcat('Enter the regularization value \n');
 % parameter.lambda = input(temp);
 parameter.lambda =str2num(answer{4});
 
-temp=strcat('Enter the validation check value \n');
+% temp=strcat('Enter the validation check value \n');
 % validation_check = input(temp);
 validation_check =str2num(answer{5});
 
@@ -78,6 +79,9 @@ L =str2num(answer{8});
 prompt = 'Enter the batch size(for mini batch training)\n';
 % L = input(prompt);
 batch_size =str2num(answer{9});
+
+% temp=strcat('Enter Train(1) or Train2_orig(2) or mini batch(3) or Train7(7) \n');
+train_c = str2num(answer{10});
 
 layer(1).Size=784;
 layer(1).a.Size=[layer(1).Size];
@@ -158,8 +162,7 @@ tanh_or_sigmoid = input(temp);
 
 %% =========== Forward and  Train MLP =============
 %
-temp=strcat('Enter Train(1) or Train2_orig(2) or mini batch(3) or Train7(7) \n');
-train_c = input(temp);
+
 if train_c == 1
     Train;
 elseif train_c==2
