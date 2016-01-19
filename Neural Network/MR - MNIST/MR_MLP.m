@@ -32,11 +32,11 @@ parameter = struct('learning_rate',[],'alfa',[],'lambda',[],'epsilon',[],'method
 parameter.epsilon = 0.12;
 
 prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','alfa:(Momentum coefficient)'...
-    ,'lambda:(Regularization coefficient','Validation check:','Iteration:','Samples:',...
-    'Number of layers:','Batch size: ','Enter Train(1) or Train2_orig(2) or mini batch(3) or Train7(7) '};
+    ,'lambda:(Regularization coefficient)','Validation check','Iteration','Number of samples',...
+    'Number of layers','Batch size','Train(1) or Train2(2) or Train3(3) or Train4(4)','tanh or sigmoid(1 for tanh -2  for sigmoid)'};
 dlg_title = 'Input';
 num_lines = 1;
-defaultans = {'1','0.3','0','0','10','100','1000','3','20'};
+defaultans = {'1','0.3','0','0','100','100','1000','3','100','1','1'};
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
 
 
@@ -63,16 +63,16 @@ parameter.lambda =str2num(answer{4});
 validation_check =str2num(answer{5});
 
 % epoch number
-temp=strcat('Enter the iteration value \n');
+% temp=strcat('Enter the iteration value \n');
 % iteration = input(temp);
 iteration =str2num(answer{6});
 
 % Number of samples
-temp=strcat('Enter the number of samples \n');
+% temp=strcat('Enter the number of samples \n');
 % samples = input(temp);
 samples =str2num(answer{7});
 
-prompt = 'Enter the number of layers\n';
+% prompt = 'Enter the number of layers\n';
 % L = input(prompt);
 L =str2num(answer{8});
 
@@ -81,7 +81,11 @@ prompt = 'Enter the batch size(for mini batch training)\n';
 batch_size =str2num(answer{9});
 
 % temp=strcat('Enter Train(1) or Train2_orig(2) or mini batch(3) or Train7(7) \n');
-train_c = str2num(answer{10});
+train_file = str2num(answer{10});
+
+
+% temp=strcat('Enter tanh(1) or sigmoid(2) (1 for tanh and 2  for sigmoid\n');
+tanh_or_sigmoid = str2num(answer{11});
 
 layer(1).Size=784;
 layer(1).a.Size=[layer(1).Size];
@@ -156,21 +160,19 @@ end
 layer(1).a(1:layer(1).Size,1:samples) = images(1:layer(1).Size,1:samples);
 tic;
 
-
-temp=strcat('Enter tanh(1) or sigmoid(2) (1 for tanh and 2  for sigmoid\n');
-tanh_or_sigmoid = input(temp);
-
 %% =========== Forward and  Train MLP =============
 %
 
-if train_c == 1
+if train_file == 1
     Train;
-elseif train_c==2
-    Train2_orig;
-elseif train_c==7
-    Train7;
-elseif train_c==3
-    mini_batch;
+elseif train_file==2
+    Train2;
+elseif train_file==3
+    Train3;
+elseif train_file==4
+    Train4;
+else
+    error('Error in inputs');
 end
 
 %%

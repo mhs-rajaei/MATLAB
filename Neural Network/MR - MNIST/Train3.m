@@ -238,15 +238,15 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     %%
 end
 
-legend('show');
 % Create multiple lines using matrix input to plot
-plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
+legend('show');
+plot1 = plot(Accuracy_Train(1:epoch));hold on;
 set(plot1,'DisplayName','Accuracy Train','Color',[0 1 0]);
 
-plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
+plot2 = plot(Accuracy_Test(1:epoch));hold on;
 set(plot2,'DisplayName','Accuracy Test','Color',[1 0 0]);
 
-plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
+plot3 = plot(Accuracy_Validation(1:epoch));hold on;
 set(plot3,'DisplayName','Accuracy Validation','Color',[0 0 0.5]);
 legend('show');
 set(legend,...

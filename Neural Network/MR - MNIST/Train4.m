@@ -179,8 +179,8 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;
     
     if epoch >1
-        legend('show');
         % Create multiple lines using matrix input to plot
+        legend('show');
         plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
         set(plot1,'DisplayName','Accuracy Train','Color',[0 1 0]);
         
@@ -222,7 +222,22 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     %%
 end
 
-displayData(layer(L).wts(:,end-1));
+% Create multiple lines using matrix input to plot
+legend('show');
+plot1 = plot(Accuracy_Train(1:epoch));hold on;
+set(plot1,'DisplayName','Accuracy Train','Color',[0 1 0]);
+
+plot2 = plot(Accuracy_Test(1:epoch));hold on;
+set(plot2,'DisplayName','Accuracy Test','Color',[1 0 0]);
+
+plot3 = plot(Accuracy_Validation(1:epoch));hold on;
+set(plot3,'DisplayName','Accuracy Validation','Color',[0 0 0.5]);
+legend('show');
+set(legend,...
+    'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
+drawnow
+
+% displayData(layer(L).wts(:,end-1));
 
 toc;
 
