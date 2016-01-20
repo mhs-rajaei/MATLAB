@@ -66,7 +66,7 @@ for i=1:index
 end
 
 [~ , a]=size(Data.target);
-[tr,tc] = size(Data.Ytrn_red{1});
+[tr,tc] = size(Data.red_eigvector{1});
 red_inputs = zeros(a,(tr*tc));
 green_inputs = zeros(a,(tr*tc));
 blue_inputs = zeros(a,(tr*tc));
@@ -75,9 +75,9 @@ feature_target = zeros(a,1);
 
 for i=1:a
     
-    red_inputs(i,:) = reshape(Data.Ytrn_red{i},[1,(tr*tc)]);
-    green_inputs(i,:) = reshape(Data.Ytrn_green{i},[1,(tr*tc)]);
-    blue_inputs(i,:) = reshape(Data.Ytrn_blue{i},[1,(tr*tc)]);
+    red_inputs(i,:) = reshape(Data.red_eigvector{i},[1,(tr*tc)]);
+    green_inputs(i,:) = reshape(Data.green_eigvector{i},[1,(tr*tc)]);
+    blue_inputs(i,:) = reshape(Data.blue_eigvector{i},[1,(tr*tc)]);
     if strcmpi(Data.target{i},'civil')
         feature_target(i,1) = 0;
     else
@@ -153,9 +153,9 @@ tblue_inputs = zeros((a),(tr*tc));
 t_feature_target = zeros((a),1);
 
 for i=1:a
-    tred_inputs(i,:) = reshape(Data.tYtrn_red{i},[1,(tr*tc)]);
-    tgreen_inputs(i,:) = reshape(Data.tYtrn_green{i},[1,(tr*tc)]);
-    tblue_inputs(i,:) = reshape(Data.tYtrn_blue{i},[1,(tr*tc)]);
+    tred_inputs(i,:) = reshape(Data.tred_eigvector{i},[1,(tr*tc)]);
+    tgreen_inputs(i,:) = reshape(Data.tgreen_eigvector{i},[1,(tr*tc)]);
+    tblue_inputs(i,:) = reshape(Data.tblue_eigvector{i},[1,(tr*tc)]);
 %     t_inputs(i,:) = reshape(Data.t_eigvector{i},[1,(tr*tc)]);
     if strcmpi(Data.t_target{i},'civil')
         t_feature_target(i,1) = 0;
@@ -169,6 +169,8 @@ end
 
 t_inputs = [tred_inputs , tgreen_inputs , tblue_inputs];
 inputs = [red_inputs , green_inputs , blue_inputs];
+
+
 Color_Gray = 1;
 MR_MLP;
 % nptr;

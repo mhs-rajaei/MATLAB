@@ -43,14 +43,14 @@ for i=1:index
 end
 
 [~ , a]=size(Data.target);
-[tr,tc] = size(Data.Ytrn{1});
+[tr,tc] = size(Data.eigvector{1});
 inputs = zeros(a,(tr*tc));
 
 
 feature_target = zeros(a,1);
 
 for i=1:a
-    inputs(i,:) = reshape(Data.Ytrn{i},[1,(tr*tc)]);
+    inputs(i,:) = reshape(Data.eigvector{i},[1,(tr*tc)]);
     if strcmpi(Data.target{i},'civil')
         feature_target(i,1) = 0;
     else
@@ -96,13 +96,13 @@ for i=1:index
 end
 
 [~ , a]=size(Data.t_target);
-[tr,tc] = size(Data.t_Ytrn{1});
+[tr,tc] = size(Data.t_eigvector{1});
 t_inputs = zeros((a),(tr*tc));
 
 t_feature_target = zeros((a),1);
 
 for i=1:a
-    t_inputs(i,:) = reshape(Data.t_Ytrn{i},[1,(tr*tc)]);
+    t_inputs(i,:) = reshape(Data.t_eigvector{i},[1,(tr*tc)]);
     if strcmpi(Data.t_target{i},'civil')
         t_feature_target(i,1) = 0;
     else
