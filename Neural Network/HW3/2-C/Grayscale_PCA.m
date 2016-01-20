@@ -43,14 +43,16 @@ for i=1:index
 end
 
 [~ , a]=size(Data.target);
-[tr,tc] = size(Data.eigvector{1});
+% [tr,tc] = size(Data.eigvector{1});
+[tr,tc] = size(Data.train_image{1,1});
 inputs = zeros(a,(tr*tc));
 
 
 feature_target = zeros(a,1);
 
 for i=1:a
-    inputs(i,:) = reshape(Data.eigvector{i},[1,(tr*tc)]);
+%     inputs(i,:) = reshape(Data.eigvector{i},[1,(tr*tc)]);
+    inputs(i,:) = reshape(Data.train_image{i,1},[1,(tr*tc)]);
     if strcmpi(Data.target{i},'civil')
         feature_target(i,1) = 0;
     else
@@ -96,13 +98,15 @@ for i=1:index
 end
 
 [~ , a]=size(Data.t_target);
-[tr,tc] = size(Data.t_eigvector{1});
+% [tr,tc] = size(Data.t_eigvector{1});
+[tr,tc] = size(Data.test_image{1,1});
 t_inputs = zeros((a),(tr*tc));
 
 t_feature_target = zeros((a),1);
 
 for i=1:a
-    t_inputs(i,:) = reshape(Data.t_eigvector{i},[1,(tr*tc)]);
+%     t_inputs(i,:) = reshape(Data.t_eigvector{i},[1,(tr*tc)]);
+    t_inputs(i,:) = reshape(Data.test_image{i,1},[1,(tr*tc)]);
     if strcmpi(Data.t_target{i},'civil')
         t_feature_target(i,1) = 0;
     else
@@ -112,6 +116,7 @@ for i=1:a
 end
 Color_Gray = 0;
 MR_MLP;
+
 % MLP_Inputs= [inputs];
 % Target = feature_target ;
 % % MLP;
