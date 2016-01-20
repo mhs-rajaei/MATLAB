@@ -14,7 +14,7 @@ for i=1:index
     % caculte PCA eigvector and eigvalue for all chanels
 %     [ Data.eigvector{i} ,  Data.eigvalue{i}] = pca(image);
  %number of feature that we want extract from all features
-    K = 25;
+    K = 10;
     
     [ Data.eigvector{i} ,  Data.eigvalue{i}] = PCA_(image, K);
    
@@ -52,9 +52,9 @@ feature_target = zeros(a,1);
 for i=1:a
     inputs(i,:) = reshape(Data.Ytrn{i},[1,(tr*tc)]);
     if strcmpi(Data.target{i},'civil')
-        feature_target(i,1) = 1;
-    else
         feature_target(i,1) = 0;
+    else
+        feature_target(i,1) = 1;
     end
     
 end
@@ -104,14 +104,14 @@ t_feature_target = zeros((a),1);
 for i=1:a
     t_inputs(i,:) = reshape(Data.t_Ytrn{i},[1,(tr*tc)]);
     if strcmpi(Data.t_target{i},'civil')
-        t_feature_target(i,1) = 1;
-    else
         t_feature_target(i,1) = 0;
+    else
+        t_feature_target(i,1) = 1;
     end
     
 end
-
-% MR_MLP;
+Color_Gray = 0;
+MR_MLP;
 % MLP_Inputs= [inputs];
 % MLP;
 % nptr;
