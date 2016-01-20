@@ -113,5 +113,6 @@ end
 Color_Gray = 0;
 MR_MLP;
 % MLP_Inputs= [inputs];
-% MLP;
+% Target = feature_target ;
+% % MLP;
 % nptr;

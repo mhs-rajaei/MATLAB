@@ -18,7 +18,7 @@ t = Target';
 % trainFcn = 'trainscg';  % Scaled conjugate gradient backpropagation.
 trainFcn  = 'traingdx';% gradient descent momentum + Adaptive learning rate
 % Create a Pattern Recognition Network
-hiddenLayerSize = 20;
+hiddenLayerSize = 200;
 net = patternnet(hiddenLayerSize);
 
 % Choose Input and Output Pre/Post-Processing Functions
