@@ -1,6 +1,6 @@
 function R_I = IO()
 
-R_I = struct('train_image',[],'test_image_class1',[],'test_image_class2',[]);
+R_I = struct('train_image',[],'test_image',[]);
 
 
 %read class1
@@ -55,7 +55,7 @@ cd 'F:\Documents\MATLAB\Neural Network\HW3\2-C\2_Class\Military\test data'
 image_files=dir('*.jpg');
 dimension=size(image_files);
 number_of_samples=dimension(1);
-
+counter = number_of_samples;
 for Q=1:number_of_samples
     file_name=image_files(Q).name;
     A=imread(file_name);
@@ -70,8 +70,8 @@ for Q=1:number_of_samples
     myImgNorm = (myImg - min(myImg(:)))*(newMax - newMin)/(max(myImg(:)) - min(myImg(:))) + newMin;
     %     myimages_class2{Q}=myImgNorm;
     
-    R_I.test_image_class1{Q,1}=myImgNorm;
-    R_I.test_image_class1{Q,2}='Military';
+    R_I.test_image{Q,1}=myImgNorm;
+    R_I.test_image{Q,2}='Military';
     
 end
 
@@ -95,14 +95,10 @@ for Q=1:number_of_samples
     myImgNorm = (myImg - min(myImg(:)))*(newMax - newMin)/(max(myImg(:)) - min(myImg(:))) + newMin;
     %     myimages_class2{Q}=myImgNorm;
     
-    R_I.test_image_class2{Q,1}=myImgNorm;
-    R_I.test_image_class2{Q,2}='Civil';
+    R_I.test_image{Q+counter,1}=myImgNorm;
+    R_I.test_image{Q+counter,2}='Civil';
     
 end
-
-% R_I.train_image = R_I.train_image;
-% R_I.test_image_class1 = R_I.test_image_class1;
-% R_I.test_image_class2 = R_I.test_image_class2;
 
 end
 

@@ -15,10 +15,10 @@ t = Target';
 % 'trainlm' is usually fastest.
 % 'trainbr' takes longer but may be better for challenging problems.
 % 'trainscg' uses less memory. Suitable in low memory situations.
-trainFcn = 'trainscg';  % Scaled conjugate gradient backpropagation.
-
+% trainFcn = 'trainscg';  % Scaled conjugate gradient backpropagation.
+trainFcn  = 'traingdx';% gradient descent momentum + Adaptive learning rate
 % Create a Pattern Recognition Network
-hiddenLayerSize = 100;
+hiddenLayerSize = 20;
 net = patternnet(hiddenLayerSize);
 
 % Choose Input and Output Pre/Post-Processing Functions
@@ -42,7 +42,8 @@ net.performFcn = 'crossentropy';  % Cross-Entropy
 % For a list of all plot functions type: help nnplot
 net.plotFcns = {'plotperform','plottrainstate','ploterrhist', ...
     'plotconfusion', 'plotroc'};
-net.trainParam.max_fail=1000;% maximum failof training and validation set
+net.trainParam.epochs=300;% number of epoch's
+net.trainParam.max_fail=200;% maximum failof training and validation set
 % Train the Network
 [net,tr] = train(net,x,t);
 
