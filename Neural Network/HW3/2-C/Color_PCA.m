@@ -29,19 +29,19 @@ for i=1:index
     Original_Image = uint8(255 * mat2gray(t_img));
     %% Feature Reduction
     % Red channel feature reduction
-    Data.Ytrn_red{i} = Red * Data.red_eigvector{i};
+    Data.Ytrn_red{i} = (Red * Data.red_eigvector{i})';
     %recover channel
-    t_img(:,:,1)  =  Data.Ytrn_red{i} * Data.red_eigvector{i}';
+    t_img(:,:,1)  =  Data.Ytrn_red{i}' * Data.red_eigvector{i}';
     
     %green channel feature reduction
-    Data.Ytrn_green{i} = Green * Data.green_eigvector{i};
+    Data.Ytrn_green{i} = (Green * Data.green_eigvector{i})';
     %recover channel
-    t_img(:,:,1)  =  Data.Ytrn_green{i} * Data.green_eigvector{i}';
+    t_img(:,:,1)  =  Data.Ytrn_green{i}' * Data.green_eigvector{i}';
     
     %blue channel feature reduction
-    Data.Ytrn_blue{i} = Blue * Data.blue_eigvector{i};
+    Data.Ytrn_blue{i} = (Blue * Data.blue_eigvector{i})';
     %recover channel
-    t_img(:,:,1)  =  Data.Ytrn_blue{i} * Data.blue_eigvector{i}';
+    t_img(:,:,1)  =  Data.Ytrn_blue{i}' * Data.blue_eigvector{i}';
     % Recover feature reduction Image
     recover_image = uint8(255 * mat2gray(t_img));
      
@@ -59,6 +59,24 @@ for i=1:index
 %         pause;
 %         close all;
 end
+
+
+% 
+% Data.Ytrn_red = Data.Ytrn_red';
+% 
+% Data.Ytrn_green = Data.Ytrn_green;
+% 
+% 
+% Data.Ytrn_blue = Data.Ytrn_blue';
+
+ 
+
+
+
+
+
+
+
 
 %% Set Target and vectorization
 [~ , a]=size(Data.target);
@@ -99,13 +117,13 @@ for i=1:index
     [ Data.tgreen_eigvector{i} ,  Data.tgreen_eigvalue{i}] = PCA_(Blue, F);
   
     %red channel feature reduction
-    Data.tYtrn_red{i} = Red * Data.tred_eigvector{i};
+    Data.tYtrn_red{i} = (Red * Data.tred_eigvector{i})';
 
     %green channel feature reduction
-    Data.tYtrn_green{i} = Green * Data.tgreen_eigvector{i};
+    Data.tYtrn_green{i} = (Green * Data.tgreen_eigvector{i})';
 
     %blue channel feature reduction
-    Data.tYtrn_blue{i} = Blue * Data.tblue_eigvector{i};
+    Data.tYtrn_blue{i} = (Blue * Data.tblue_eigvector{i})';
  
 end
 
@@ -137,6 +155,11 @@ end
 %% Set inputs for MLP
 t_inputs = [tred_inputs , tgreen_inputs , tblue_inputs];
 inputs = [red_inputs , green_inputs , blue_inputs];
+
+% t_inputs = [tred_inputs' , tgreen_inputs' , tblue_inputs'];
+% inputs = [red_inputs' , green_inputs' , blue_inputs'];
+t_feature_target = t_feature_target';
+feature_target = feature_target';
 
 %% Learning MLP with PCA feature
 Color_Gray = 1;
