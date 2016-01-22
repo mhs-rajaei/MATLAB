@@ -1,22 +1,11 @@
-%% =========== Start Project =============
-%
-%
-%
+%% =========== Start MR_MLP =============
 
 %clc;
 
 function MR_MLP(number_of_training_samples,number_of_input_neurons,trainig_inputs,...
     training_labels,test_inputs,test_labels)
-%% =========== Laod MNIST Dataset =============
-
-% %% Google Net
-% if google_net == 1
-%     [input_size , cnn_size] = size(cnnFeatures);
-%     feature_size = size(cnnFeatures);
-%   
-% %     input1 = reshape(Data.red_eigvector{1},[1,feature_size(1)*feature_size(2)]);
-    num_of_samples = num2str(number_of_training_samples);%sapmles
-% end
+%% =========== Laod Datas =============
+num_of_samples = num2str(number_of_training_samples);%sapmles
 
 % Targets
 labels = training_labels;
