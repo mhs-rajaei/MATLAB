@@ -1,4 +1,4 @@
-function R_I = IO(path,percent_of_test_data,hight,width,zero_one,original)
+function R_I = Load_Image(path,percent_of_test_data,hight,width,zero_one,original)
 
 
 % path ='F:\Documents\MATLAB\Neural Network\HW3\Data\Pet Images';
@@ -68,7 +68,12 @@ for i=min_idx:max_idx
     
 end
 
-    fprintf(strcat('Warning, we convert ', num2str(number_of_convert),', 1 channel image to 3 channel image\n'));
+    if number_of_convert>0
+        fprintf(strcat('Warning, we convert ', ...
+            num2str(number_of_convert),...
+            ', 1 channel image to 3 channel image\n'));
+    end
+
 %shuffle test data's
 % training images and test images sepration
 test_images = images_matrix(:,:,:,idx);
@@ -124,13 +129,4 @@ if strcmpi(zero_one,'true')
     R_I.zero_one_testing_Labels = test_target;
 end
 end
-
-
-
-
-
-
-
-
-
 
