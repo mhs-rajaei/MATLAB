@@ -1,1 +1,0 @@
-fprintf('In The Name of ALLAH\n');
