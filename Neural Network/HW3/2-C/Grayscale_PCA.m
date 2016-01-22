@@ -8,24 +8,31 @@ cd 'F:\Documents\MATLAB\Neural Network\HW3\2-C';
 [index , ~] = size(Data.train_image);
 for i=1:index
     %% number of feature that we want extract from all features
-    K = 50;
+    K = 5;
     % convet RGB to Grayscale
-    image = rgb2gray(Data.train_image{i});
+%     image = rgb2gray(Data.train_image{i});
+    w1 = 0.33;
+    w2 = 0.33;
+    w3 = 0.33;
+    Red = Data.train_image{i}(:,:,1);
+    Green =  Data.train_image{i}(:,:,2);
+    Blue = Data.train_image{i}(:,:,3);
+    I = w1*Red + w2*Green + w3*Blue;
+    
     Data.target{i} = Data.train_image{i+size(Data.train_image)};
     %%  caculte PCA eigvector and eigvalue
-    [ Data.eigvector{i} ,  Data.eigvalue{i}] = PCA_(image, K);
+    [ Data.eigvector{i} ,  Data.eigvalue{i}] = PCA_(I, K);
     %% feature reduction
-    Data.Ytrn{i} = image * Data.eigvector{i};
-    
+    Data.Ytrn{i} = I * Data.eigvector{i};
     % Recover feature reduction Image
     t_img  =  Data.Ytrn{i} * Data.eigvector{i}';
     
-%             % Display original image
-%             subplot(1, 2, 1);
-%             imshow(image);
-%             title('Original');
-%             axis square;
-%     
+            % Display original image
+            subplot(1, 2, 1);
+            imshow(I);
+            title('Original');
+            axis square;
+    
 %             Display reconstructed image from only F eigenfaces
 %             subplot(1, 2, 2);
 %             imshow(t_img);
@@ -47,7 +54,7 @@ for i=1:a
     %     inputs(i,:) = reshape(Data.eigvector{i},[1,(tr*tc)]);
     inputs(i,:) = reshape(Data.Ytrn{i},[1,(tr*tc)]);
     
-    if strcmpi(Data.target{i},'civil')
+    if strcmpi(Data.target{i},'0')
         feature_target(i,1) = 0;
     else
         feature_target(i,1) = 1;
@@ -76,7 +83,7 @@ t_feature_target = zeros((a),1);
 for i=1:a
     %     t_inputs(i,:) = reshape(Data.t_eigvector{i},[1,(tr*tc)]);
     t_inputs(i,:) = reshape(Data.t_Ytrn{i},[1,(tr*tc)]);
-    if strcmpi(Data.t_target{i},'civil')
+    if strcmpi(Data.t_target{i},'0')
         t_feature_target(i,1) = 0;
     else
         t_feature_target(i,1) = 1;
@@ -84,7 +91,7 @@ for i=1:a
     
 end
 Color_Gray = 0;
-MR_MLP;
+% MR_MLP;
 
 %% Train with NN toolbox in matlab if you want!
 % MLP_Inputs= [inputs];
