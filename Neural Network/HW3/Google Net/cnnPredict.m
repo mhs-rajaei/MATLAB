@@ -29,8 +29,8 @@ scores = squeeze(gather(scores))';
 function im = cnnPreprocess(batchImages)
     % Preprocess images
     im = single(batchImages);
-%     im = imresize(im, cnnModel.net.normalization.imageSize(1:2));
-% 	im = bsxfun(@minus,im,cnnModel.net.normalization.averageImage);
+    im = imresize(im, cnnModel.net.normalization.imageSize(1:2));
+	im = bsxfun(@minus,im,cnnModel.net.normalization.averageImage);
 end
 
 end

@@ -153,7 +153,7 @@ training_inputs = [training.red_inputs , training.green_inputs , training.blue_i
 % feature_target = feature_target';
 
 %% Learning MLP with PCA feature
-Color_Gray = 1;
+% Color_Gray = 1;
 % MR_MLP;
 % MR_MLP(number_of_training_samples,number_of_input_neurons,inputs,...
 %     training_labels,test_inputs,test_labels);

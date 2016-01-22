@@ -4,7 +4,7 @@ vl_setupnn;
 % load the pre-trained CNN
 cnnModel.net = load('F:\Documents\MATLAB\Data\imagenet-vgg-f.mat');
 %% Load data
-Data = IO('F:\Documents\MATLAB\Data\Pet Images',20,72,72,'true','false');
+Data = Load_Image('F:\Documents\MATLAB\Data\Pet Images',20,224,224,'true','false');
 % IO(path,percent_of_test_data,hight,width,zero_one,original)
 
 %% Freature extraction...
