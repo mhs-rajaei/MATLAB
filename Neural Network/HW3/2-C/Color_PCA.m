@@ -2,17 +2,18 @@ clear all
 close all
 %%
 %% Read Images & Targets & etc
-Data = IO();
+Data = IO('F:\Documents\MATLAB\Neural Network\HW3\Data\Pet Images',...
+    15,224,224,'true','true');
 
 cd 'F:\Documents\MATLAB\Neural Network\HW3\2-C';
 
-[index , ~] = size(Data.train_image);
-for i=1:index
+train_index  = size(Data.training_images,4);
+for i=1:train_index
     %% Channel separation
-    Red = Data.train_image{i}(:,:,1);
-    Green =  Data.train_image{i}(:,:,2);
-    Blue = Data.train_image{i}(:,:,3);
-    Data.target{i} = Data.train_image{i+size(Data.train_image)};
+    Red =   Data.training_images(:,:,1,i);
+    Green = Data.training_images(:,:,2,i);
+    Blue =  Data.training_images(:,:,3,i);
+%     Data.target{i} = Data.training_images{i+size(Data.training_images)};
     
     %% Number of feature that we want to extract
     F = 5;
@@ -67,38 +68,38 @@ for i=1:index
 end
 
 %% Set Target and vectorization
-[~ , a]=size(Data.target);
+train_index=size(Data.training_Labels,1);
 [tr,tc] = size(Data.Ytrn_red{1});
-red_inputs = zeros(a,(tr*tc));
-green_inputs = zeros(a,(tr*tc));
-blue_inputs = zeros(a,(tr*tc));
+training.red_inputs = zeros(train_index,(tr*tc));
+training.green_inputs = zeros(train_index,(tr*tc));
+training.blue_inputs = zeros(train_index,(tr*tc));
 
-feature_target = zeros(a,1);
+% feature_target = zeros(a,1);
 
-for i=1:a
+for i=1:train_index
     
     %     red_inputs(i,:) = reshape(Data.red_eigvector{i},[1,(tr*tc)]);
     %     green_inputs(i,:) = reshape(Data.green_eigvector{i},[1,(tr*tc)]);
     %     blue_inputs(i,:) = reshape(Data.blue_eigvector{i},[1,(tr*tc)]);
-    red_inputs(i,:) = reshape(Data.Ytrn_red{i},[1,(tr*tc)]);
-    green_inputs(i,:) = reshape(Data.Ytrn_green{i},[1,(tr*tc)]);
-    blue_inputs(i,:) = reshape(Data.Ytrn_blue{i},[1,(tr*tc)]);
-    
-    if strcmpi(Data.target{i},'civil')
-        feature_target(i,1) = 0;
-    else
-        feature_target(i,1) = 1;
-    end
+    training.red_inputs(i,:) = reshape(Data.Ytrn_red{i},[1,(tr*tc)]);
+    training.green_inputs(i,:) = reshape(Data.Ytrn_green{i},[1,(tr*tc)]);
+    training.blue_inputs(i,:) = reshape(Data.Ytrn_blue{i},[1,(tr*tc)]);
+%     
+%     if strcmpi(Data.target{i},'0')
+%         feature_target(i,1) = 0;
+%     else
+%         feature_target(i,1) = 1;
+%     end
     
 end
 
 %% Exact opreation on Test Data
-[index , ~] = size(Data.test_image);
-for i=1:index
-    Red =Data.test_image{i}(:,:,1);
-    Green =  Data.test_image{i}(:,:,2);
-    Blue = Data.test_image{i}(:,:,3);
-    Data.t_target{i} = Data.test_image{i+size(Data.test_image)};
+tese_index= size(Data.test_images,4);
+for i=1:tese_index
+    Red =Data.test_images(:,:,1,i);
+    Green =  Data.test_images(:,:,2,i);
+    Blue = Data.test_images(:,:,3,i);
+%     Data.t_target{i} = Data.test_images{i+size(Data.test_images)};
     %claculte PCA eigvector and eigvalue for all channels
     [ Data.tred_eigvector{i} ,  Data.tred_eigvalue{i}] = PCA_(Red, F);
     [ Data.tblue_eigvector{i} ,  Data.tblue_eigvalue{i}] = PCA_(Green, F);
@@ -116,40 +117,50 @@ for i=1:index
 end
 
 % Set Target and vectorization
-[~ , a]=size(Data.t_target);
+% index =size(Data.test_Labels,1);
 [tr,tc] = size(Data.tYtrn_blue{1});
-tred_inputs = zeros((a),(tr*tc));
-tgreen_inputs = zeros((a),(tr*tc));
-tblue_inputs = zeros((a),(tr*tc));
+test.red_inputs = zeros((tese_index),(tr*tc));
+test.green_inputs = zeros((tese_index),(tr*tc));
+test.blue_inputs = zeros((tese_index),(tr*tc));
 
-t_feature_target = zeros((a),1);
+% t_feature_target = zeros((a),1);
 
-for i=1:a
+for i=1:tese_index
     %     tred_inputs(i,:) = reshape(Data.tred_eigvector{i},[1,(tr*tc)]);
     %     tgreen_inputs(i,:) = reshape(Data.tgreen_eigvector{i},[1,(tr*tc)]);
     %     tblue_inputs(i,:) = reshape(Data.tblue_eigvector{i},[1,(tr*tc)]);
-    tred_inputs(i,:) = reshape(Data.tYtrn_red{i},[1,(tr*tc)]);
-    tgreen_inputs(i,:) = reshape(Data.tYtrn_green{i},[1,(tr*tc)]);
-    tblue_inputs(i,:) = reshape(Data.tYtrn_blue{i},[1,(tr*tc)]);
+    test.red_inputs(i,:) = reshape(Data.tYtrn_red{i},[1,(tr*tc)]);
+    test.green_inputs(i,:) = reshape(Data.tYtrn_green{i},[1,(tr*tc)]);
+    test.blue_inputs(i,:) = reshape(Data.tYtrn_blue{i},[1,(tr*tc)]);
     
-    if strcmpi(Data.t_target{i},'civil')
-        t_feature_target(i,1) = 0;
-    else
-        t_feature_target(i,1) = 1;
-    end
-    
+%     if strcmpi(Data.t_target{i},'0')
+%         t_feature_target(i,1) = 0;
+%     else
+%         t_feature_target(i,1) = 1;
+%     end
+%     
 end
 
 %% Set inputs for MLP
-t_inputs = [tred_inputs , tgreen_inputs , tblue_inputs];
-inputs = [red_inputs , green_inputs , blue_inputs];
+test_inputs = [test.red_inputs , test.green_inputs , test.blue_inputs];
+training_inputs = [training.red_inputs , training.green_inputs , training.blue_inputs];
 %     imshow(inputs);
 %     pause;
 % t_inputs = [tred_inputs' , tgreen_inputs' , tblue_inputs'];
 % inputs = [red_inputs' , green_inputs' , blue_inputs'];
-t_feature_target = t_feature_target';
-feature_target = feature_target';
+
+% t_feature_target = t_feature_target';
+% feature_target = feature_target';
 
 %% Learning MLP with PCA feature
 Color_Gray = 1;
-MR_MLP;
+% MR_MLP;
+% MR_MLP(number_of_training_samples,number_of_input_neurons,inputs,...
+%     training_labels,test_inputs,test_labels);
+MR_MLP(size(training_inputs,1),size(training_inputs,2),training_inputs',...
+    Data.zero_one_training_Labels,test_inputs',Data.zero_one_testing_Labels);
+
+
+
+clear tr;clear tc;clear t_img;clear Original_Image;clear recover_image;
+clear Red;clear Green;clear Blue;
