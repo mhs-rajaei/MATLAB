@@ -38,5 +38,6 @@ MR_MLP(size(training_inputs,1),size(training_inputs,2),training_inputs',...
 %% Train with NN toolbox in matlab if you want!
 % MLP_Inputs= [inputs];
 % Target = feature_target ;
-% MLP;
-% nptr;
+% Custom_MLP(training_inputs,Data.zero_one_training_Labels,test_inputs,Data.zero_one_testing_Labels);
+% function nptr(training_inputs,training_targets,test_inputs,test_targets)
+% nptr(training_inputs,Data.zero_one_training_Labels,test_inputs,Data.zero_one_testing_Labels);
