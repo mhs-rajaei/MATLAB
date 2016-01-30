@@ -13,7 +13,7 @@ check_validation = zeros(1,validation_check);
 validation = 0;
 index = 1;
 MSE = zeros(1,iteration);
-layer(L).MSE = zeros(2,number_of_training_samples);
+layer(L).MSE = zeros(layer(L).Size,number_of_training_samples);
 % layer(L).MSE2 = zeros(10,samples);
 counter = 0;
 

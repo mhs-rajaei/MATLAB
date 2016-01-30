@@ -1,7 +1,8 @@
-%% ======  Initializing...
-%inputs
-MLP_Inputs = cnnFeatures;
-Target = feature_target;
+function Custom_MLP(training_inputs,training_targets,test_inputs,test_targets)
+% ======  Initializing...
+MLP_Inputs = training_inputs;
+Target = training_targets;
+
 
 % Choose a Logestic Function
 TF={'logsig','logsig'};
@@ -15,16 +16,18 @@ TF={'logsig','logsig'};
 
 % BTF = 'trainlm'; % Levenberg-Marquardt
 
-BTF = 'trainb';% batch training
+% BTF = 'trainb';% batch training
 
 % BTF = 'traingdm';%  gradient descent with momentum
 
-% BTF = 'traingdx';% gradient descent momentum + Adaptive learning rate
+BTF = 'traingdx';% gradient descent momentum + Adaptive learning rate
 
 %%
 % Create a feed forward neural network with hidden Layer Size 15
-hiddenLayerSize = 1;
-mlp = newff(MLP_Inputs',Target',[15 10],TF,BTF);
+hiddenLayerSize = 4;
+
+mlp = newff(MLP_Inputs',Target',[100 80 50 25],TF,BTF);
+% mlp.outputs = 2;
 %% Set Training, Validation & Test Data with Performance Function & Plots
 % Setup Division of Data for Training, Validation, Testing
 % For a list of all data division functions type: help nndivide
@@ -73,11 +76,11 @@ view(mlp)
 
 % Plots
 % Uncomment these lines to enable various plots.
-%figure, plotperform(tr)
-%figure, plottrainstate(tr)
-%figure, ploterrhist(e)
-%figure, plotconfusion(t,y)
-%figure, plotroc(t,y)
+% figure, plotperform(tr)
+% figure, plottrainstate(tr)
+% figure, ploterrhist(e)
+% figure, plotconfusion(t,y)
+% figure, plotroc(t,y)
 
 % Deployment
 % Change the (false) values to (true) to enable the following code blocks.
@@ -105,9 +108,9 @@ end
 
 %% Test
 % testX = x(:,tr.testInd);
-testX = t_inputs';
+testX = test_inputs';
 % testT = t(:,tr.testInd);
-testT = t_feature_target';
+testT = test_targets';
 
 testY = mlp(testX);
 testIndices = vec2ind(testY);
@@ -117,3 +120,4 @@ testIndices = vec2ind(testY);
 fprintf('Percentage Correct Classification   : %f%%\n', 100*(1-c));
 fprintf('Percentage Incorrect Classification : %f%%\n', 100*c);
 
+end

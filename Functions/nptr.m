@@ -1,8 +1,8 @@
 %% Pattern Recognition Problem with a Neural Network
-
+function nptr(training_inputs,training_targets,test_inputs,test_targets)
 % This script assumes these variables are defined:
-x = cnnFeatures';
-t = feature_target';
+x = training_inputs';
+t = training_targets';
 
 % Choose a Training Function
 % For a list of all training functions type: help nntrain
@@ -94,9 +94,9 @@ end
 
 %% Test
 % testX = x(:,tr.testInd);
-testX = t_inputs';
+testX = test_inputs';
 % testT = t(:,tr.testInd);
-testT = t_feature_target';
+testT = test_targets';
 
 testY = net(testX);
 testIndices = vec2ind(testY);
@@ -105,3 +105,5 @@ testIndices = vec2ind(testY);
 
 fprintf('Percentage Correct Classification   : %f%%\n', 100*(1-c));
 fprintf('Percentage Incorrect Classification : %f%%\n', 100*c);
+
+end
