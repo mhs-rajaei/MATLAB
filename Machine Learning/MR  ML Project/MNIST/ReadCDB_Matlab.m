@@ -1,10 +1,10 @@
-% in the name of ALLAH
+% In the name of ALLAH
 % ReadCDB: Reads a .cdb file and stores them in "Data" and "Lables"
-% clear all;
+clear all;
 clc;
-ShowImages = true
-SaveImages = false
-filename = 'F:\Documents\MATLAB\MR - MNIST\Farsi Digit Dataset\Test 20000.cdb';
+ShowImages = true;
+SaveImages = false;
+filename = 'F:\Documents\MATLAB\Data\MNIST\Farsi Digit Dataset\Test 20000.cdb';
 
 fid = fopen(filename, 'rb');
 %read private header
@@ -19,9 +19,9 @@ imgType = fread(fid, 1, 'uint8');%0: binary, 1: gray
 Comments = fread(fid, 256, 'int8');
 Reserved = fread(fid, 245, 'uint8');
 if( (W > 0) && (H > 0))
-    normal = true
+    normal = true;
 else
-    normal = false
+    normal = false;
 end;
 
 Data = cell(TotalRec,1);
@@ -59,8 +59,30 @@ for i = 1:TotalRec
     else %GrayScale mode
         Data{i} = transpose(reshape(uint8(fread(fid, W*H)), W, H));
     end;%else
-    
-    
-end    
-%i
+%     if ShowImages
+%         imshow(Data{i});
+%         title(sprintf('%d (%d*%d)', labels(i), W, H));
+%         if(SaveImages)
+%             imwrite((Data{i}), sprintf('\\%d_%d.bmp',i,labels(i)));
+%         end
+% %         pause;
+%     end    
+end;%i
 fclose(fid);
+image = zeros();
+
+test_images(:,:,:) = zeros(32,32,20000);
+for i=1:size(Data,1)
+    image= imresize(Data{i},[32,32]); %resize size(fixd size)
+    converted_image_2_double = im2double(image);
+    % Normalize the Image:
+    im_Range = getrangefromclass(converted_image_2_double(1));
+    Max_range = im_Range(2);
+    Min_range = im_Range(1);
+    nomalized_image = (converted_image_2_double - min(converted_image_2_double(:)))*...
+        (Max_range - Min_range)/(max(converted_image_2_double(:)) - min(converted_image_2_double(:))) + Min_range;
+    test_images(:,:,i) = im2double(nomalized_image);
+end
+
+
+test_labels = labels;

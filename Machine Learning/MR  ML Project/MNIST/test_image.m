@@ -1,16 +1,40 @@
-clc
-clear all
-imfile = 'E:\Desktop\7.png'; target_22 = 9;
-im = double(rgb2gray(imread(imfile))); % double and convert to grayscale
-im = imresize(im,[28,28]);  % change to 20 by 20 dimension
-im = im(:); % unroll matrix to vector
-im = im./max(im); 
 
-% load('E:\Desktop\number2.mat');
-% load('E:\Desktop\x.mat');
-load('F:\Documents\MATLAB\Machine Learning\MR  ML Project\results\98.17 accuracy.mat');
-% layer(1).a=reshape(x,[784 1]);
-layer(1).a = im;
+%% test some pictures
+
+%read live image from your PC
+imfile = 'E:\Desktop\9.png'; target_22 = 9;
+im = double(rgb2gray(imread(imfile))); % double and convert to grayscale
+im= imresize(im,[32,32]); %resize size(fixd size)
+% imwrite(im,'E:\Desktop\g7.png');
+
+for i=1:size(im,1)
+    for j = 1:size(im,2)
+        if im(i,j)==255
+            im(i,j)=0;
+        else
+             im(i,j)=255;
+        end
+    end
+end
+
+image = zeros();
+
+
+for i=1:size(im,1)
+%     image= imresize(im,[32,32]); %resize size(fixd size)
+    image = im;
+    % Normalize the Image:
+    im_Range = getrangefromclass(image(1));
+    Max_range = im_Range(2);
+    Min_range = im_Range(1);
+    nomalized_image = (image - min(image(:)))*...
+        (Max_range - Min_range)/(max(image(:)) - min(image(:))) + Min_range;
+    persian_test_images = nomalized_image;
+end
+
+
+layer(1).a=reshape(persian_test_images,[1024 1]);
+% layer(1).a = im;
 answer=0;
     for c=2:L
         if c==2
@@ -27,54 +51,17 @@ answer=0;
     test = Max_Rand_Activation(layer(L).a,layer(L).Size,target_22);
     answer = test;
     fprintf(num2str(answer));
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-% 
-% % image = imread('E:\Desktop\5-2.png');
-% % imshow(image);title('original image');
-% % pause;
-% % image  = imresize(image,[28 28]);
-% % imshow(image);title('resized image');
-% % pause;
-% % image = rgb2gray(image);
-% % imshow(image);title('gray image');
-% % pause;
-% 
-%  % Normalize the Image:
-% %     Max_range = 1;
-% %     Min_range = 0;
-% %     nomalized_image = (image - min(image(:)))*...
-% %         (Max_range - Min_range)/(max(image(:)) - min(image(:))) + Min_range;
-% % imshow(nomalized_image);title('nomalized_image');
-% % pause;
-% 
-% % image_divided_255 = nomalized_image/255;
-% % imshow(image);title('/ 255 image');
-% % n1 = reshape(image_divided_255,[784 1]);
-% 
-% % Convert to double and rescale to [0,1]
-% % image2 = double(image) / 255;
-% % n2 = reshape(image2,[784 1]);
-% 
-% % save(nomalized_image);
-% % save(image);
-% % save(image_divided_255);
-% % save('E:\Desktop\number2.mat');
-
-
-
-
- 
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%

@@ -1,3 +1,5 @@
+% -mini batch +regularization +momentum +adaptive learning rate 
+
 %% =========== Forward : Computing Delta's : Update Weights =============
 delta_W=zeros();
 delta_W_last=zeros();

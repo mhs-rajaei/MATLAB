@@ -1,6 +1,7 @@
-% +mini batch   +regularization   +momentum   +adaptive learning rate 
+% +mini batch   +regularization   +momentum   +adaptive learning rate
 
 %% =========== Forward : Computing Delta's : Update Weights =============
+
 delta_W=zeros();
 delta_W_last=zeros();
 delta_theta=zeros();
@@ -11,6 +12,25 @@ Accuracy_Test = zeros(1,iteration);
 Accuracy_Validation = zeros(1,iteration);
 check_validation = zeros(1,validation_check);
 
+if(hoda==true)
+    %i add this code to MR MNIST act like a function
+    samples  =number_of_training_samples;
+    images = trainig_inputs;
+    
+    if samples >= 20000
+        tsamples = 20000;
+    else
+        tsamples = samples;
+    end
+    
+    tsamples_v = 10000;
+else
+    if samples >= 10000
+        tsamples = 10000;
+    else
+        tsamples = samples;
+    end
+end
 
 
 validation = 0;
@@ -19,6 +39,13 @@ MSE = zeros(1,iteration);
 layer(L).MSE = zeros(10,samples);
 % layer(L).MSE2 = zeros(10,samples);
 counter = 0;
+
+% Create figure
+figure1 = figure;
+
+% Create axes
+axes1 = axes('Parent',figure1);
+hold(axes1,'on');
 
 for epoch=1:iteration % forward and update weight's in number of  iterations
     delta_W=zeros();
@@ -174,18 +201,14 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     Train_or_Test = 0;% accuracy on Train Data
     Accuracy_Train(epoch) = Test(layer,samples,Train_or_Test,L,labels,images,tanh_or_sigmoid)/samples;
     %
-    if samples >= 10000
-        tsamples = 10000;
-    else
-        tsamples = samples;
-    end
+    
     
     Train_or_Test = 1;% accuracy on Test Data
     Accuracy_Test(epoch) = Test(layer,tsamples,Train_or_Test,L,tlabels,timages,tanh_or_sigmoid)/tsamples;
     %
     Train_or_Test = 2;% accuracy on Validation Data
-    Accuracy_Validation(epoch) = Test(layer,tsamples,Train_or_Test,L,validation_labels,...
-        validation_images,tanh_or_sigmoid)/tsamples;
+    Accuracy_Validation(epoch) = Test(layer,tsamples_v,Train_or_Test,L,validation_labels,...
+        validation_images,tanh_or_sigmoid)/tsamples_v;
     
     % Compute Overal MSE
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;
@@ -193,48 +216,56 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     
     
     if epoch >1
-        legend('show');
+        
         % Create multiple lines using matrix input to plot
         plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
-        set(plot1,'DisplayName','Accuracy Train','Color',[0 1 0]);
+        set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
+            'Color',[0.600000023841858 0.200000002980232 0]);
         
         plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
-        set(plot2,'DisplayName','Accuracy Test','Color',[0 0 0]);
+        set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
         
         plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
-        set(plot3,'DisplayName','Accuracy Validation','Color',[0 0 0.5]);
+        set(plot3,'DisplayName','Accuracy Validation','LineWidth',3,'LineStyle','-.',...
+            'Color',[0 0 0.5]);
+        
+        
+        % Set the remaining axes properties
+        set(axes1,'XGrid','on','YGrid','on');
+        
+        % Create legend
         legend('show');
         set(legend,...
             'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
         drawnow
     end
     
-    
+    %     close all;
     
     % adaptive learning rate
-%     if epoch>1
-%         if (Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<1
-%             parameter.learning_rate = 1.05*parameter.learning_rate;
-%         elseif ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))>=1) & ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<=1.04)
-%             parameter.learning_rate = parameter.learning_rate;
-%         else
-%             parameter.learning_rate = 0.7*parameter.learning_rate;
-%         end
-%     end
+    %     if epoch>1
+    %         if (Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<1
+    %             parameter.learning_rate = 1.05*parameter.learning_rate;
+    %         elseif ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))>=1) & ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<=1.04)
+    %             parameter.learning_rate = parameter.learning_rate;
+    %         else
+    %             parameter.learning_rate = 0.7*parameter.learning_rate;
+    %         end
+    %     end
     
-%     % or 
-%      if epoch>1
-%         if (Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<1
-%             parameter.learning_rate = 0.7*parameter.learning_rate;
-%         elseif ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))>=1) & ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<=1.04)
-%             parameter.learning_rate = parameter.learning_rate;
-%         else
-%             parameter.learning_rate = 1.05*parameter.learning_rate;
-%         end
-%     end
-
-% or 
-if epoch>1
+    %     % or
+    %      if epoch>1
+    %         if (Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<1
+    %             parameter.learning_rate = 0.7*parameter.learning_rate;
+    %         elseif ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))>=1) & ((Accuracy_Train(epoch)/Accuracy_Train(epoch-1))<=1.04)
+    %             parameter.learning_rate = parameter.learning_rate;
+    %         else
+    %             parameter.learning_rate = 1.05*parameter.learning_rate;
+    %         end
+    %     end
+    
+    % or
+    if epoch>1
         if (Accuracy_Test(epoch)/Accuracy_Test(epoch-1))<1
             parameter.learning_rate = 0.7 * parameter.learning_rate;
             parameter.alfa = 0.7 * parameter.alfa;
@@ -266,19 +297,23 @@ if epoch>1
 end
 
 % Create multiple lines using matrix input to plot
-legend('show');
-plot1 = plot(Accuracy_Train(1:epoch));hold on;
-set(plot1,'DisplayName','Accuracy Train','Color',[0 1 0]);
-
-plot2 = plot(Accuracy_Test(1:epoch));hold on;
-set(plot2,'DisplayName','Accuracy Test','Color',[0 0 0]);
-
-plot3 = plot(Accuracy_Validation(1:epoch));hold on;
-set(plot3,'DisplayName','Accuracy Validation','Color',[0 0 0.5]);
+plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
+set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
+    'Color',[0.600000023841858 0.200000002980232 0]);
+plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
+set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
+plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
+set(plot3,'DisplayName','Accuracy Validation','LineWidth',3,'LineStyle','-.',...
+    'Color',[0 0 0.5]);
+% Set the remaining axes properties
+set(axes1,'XGrid','on','YGrid','on');
+% Create legend
 legend('show');
 set(legend,...
     'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
-drawnow
+drawnow;
+
+draw_MSE(MSE);
 
 toc;
 
