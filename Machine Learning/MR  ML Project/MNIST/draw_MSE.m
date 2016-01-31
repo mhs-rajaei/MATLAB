@@ -22,7 +22,7 @@ xlabel({'Epoch'});
 ylabel({'MSE'});
 
 % Create title
-title({'Hoda MSE'});
+title({'MSE'});
 
 box(axes1,'on');
 % Set the remaining axes properties
