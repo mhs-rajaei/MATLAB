@@ -30,14 +30,13 @@ else
     else
         tsamples = samples;
     end
-     tsamples_v = 10000;
 end
 
 
 validation = 0;
 index = 1;
 MSE = zeros(1,iteration);
-layer(L).MSE = zeros(9,samples);
+layer(L).MSE = zeros(10,samples);
 % layer(L).MSE2 = zeros(10,samples);
 counter = 0;
 
@@ -54,7 +53,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     for num_in=1:samples
         %% =========== Forward =============
         counter = counter +1;
-        target = test_inputs(:,counter);
+        target = Target(labels(num_in),layer(L).Size);
         
         for c=2:L
             if c==2
@@ -79,9 +78,9 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         
         
         % =========== Computing MSE  =================
-        layer(L).MSE(:,num_in) = (target' - layer(L).a).^2;
+        layer(L).MSE(:,num_in) = (target - layer(L).a).^2;
         %% =========== Computing Delta's  =============
-        layer(L).delta = -(target' - layer(L).a);
+        layer(L).delta = -(target - layer(L).a);
         %         if tanh_or_sigmoid==1 %tanh
         %             layer(L).delta = -(target - layer(L).a) .* ...
         %                 tanhypGradient(layer(L).z) ;
@@ -199,17 +198,17 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     
     %% TEST & Accuracy & MSE
     
-%     Train_or_Test = 0;% accuracy on Train Data
-%     Accuracy_Train(epoch) = Test(layer,samples,Train_or_Test,L,labels,images,tanh_or_sigmoid)/samples;
+    Train_or_Test = 0;% accuracy on Train Data
+    Accuracy_Train(epoch) = Test(layer,samples,Train_or_Test,L,labels,images,tanh_or_sigmoid)/samples;
     %
     
     
-%     Train_or_Test = 1;% accuracy on Test Data
-%     Accuracy_Test(epoch) = Test(layer,tsamples,Train_or_Test,L,tlabels,timages,tanh_or_sigmoid)/tsamples;
-%     %
-%     Train_or_Test = 2;% accuracy on Validation Data
-%     Accuracy_Validation(epoch) = Test(layer,tsamples_v,Train_or_Test,L,validation_labels,...
-%         validation_images,tanh_or_sigmoid)/tsamples_v;
+    Train_or_Test = 1;% accuracy on Test Data
+    Accuracy_Test(epoch) = Test(layer,tsamples,Train_or_Test,L,tlabels,timages,tanh_or_sigmoid)/tsamples;
+    %
+    Train_or_Test = 2;% accuracy on Validation Data
+    Accuracy_Validation(epoch) = Test(layer,tsamples_v,Train_or_Test,L,validation_labels,...
+        validation_images,tanh_or_sigmoid)/tsamples_v;
     
     % Compute Overal MSE
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;
@@ -223,12 +222,12 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
             'Color',[0.600000023841858 0.200000002980232 0]);
         
-%         plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
-%         set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
-%         
-%         plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
-%         set(plot3,'DisplayName','Accuracy Validation','LineWidth',3,'LineStyle','-.',...
-%             'Color',[0 0 0.5]);
+        plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
+        set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
+        
+        plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
+        set(plot3,'DisplayName','Accuracy Validation','LineWidth',3,'LineStyle','-.',...
+            'Color',[0 0 0.5]);
         
         
         % Set the remaining axes properties
@@ -267,16 +266,16 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     
     % or
     if epoch>1
-%         if (Accuracy_Test(epoch)/Accuracy_Test(epoch-1))<1
-%             parameter.learning_rate = 0.7 * parameter.learning_rate;
-%             parameter.alfa = 0.7 * parameter.alfa;
-%         elseif ((Accuracy_Test(epoch)/Accuracy_Test(epoch-1))>=1) & ((Accuracy_Test(epoch)/Accuracy_Test(epoch-1))<=1.04)
-%             parameter.learning_rate = parameter.learning_rate;
-%             parameter.alfa =  parameter.alfa;
-%         else
-%             parameter.learning_rate = 1.05*parameter.learning_rate;
-%             parameter.alfa = 1.05 *parameter.alfa;
-%         end
+        if (Accuracy_Test(epoch)/Accuracy_Test(epoch-1))<1
+            parameter.learning_rate = 0.7 * parameter.learning_rate;
+            parameter.alfa = 0.7 * parameter.alfa;
+        elseif ((Accuracy_Test(epoch)/Accuracy_Test(epoch-1))>=1) & ((Accuracy_Test(epoch)/Accuracy_Test(epoch-1))<=1.04)
+            parameter.learning_rate = parameter.learning_rate;
+            parameter.alfa =  parameter.alfa;
+        else
+            parameter.learning_rate = 1.05*parameter.learning_rate;
+            parameter.alfa = 1.05 *parameter.alfa;
+        end
     end
     %% Validation check
     if epoch == 1

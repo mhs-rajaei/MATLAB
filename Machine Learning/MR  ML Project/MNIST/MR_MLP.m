@@ -23,78 +23,47 @@ if(hoda == true)
     
     %% =========== Laod Hoda Data set =============
     % load Hoda data set
-%     load('F:\Documents\MATLAB\Data\MNIST\Farsi Digit Dataset\hoda_training_images(60000).mat');
-%     load('F:\Documents\MATLAB\Data\MNIST\Farsi Digit Dataset\hoda_remaining_images(22352).mat');
-%     load('F:\Documents\MATLAB\Data\MNIST\Farsi Digit Dataset\hoda_test_images(20000).mat');
-%     
-%     figure(4);
+    load('F:\Documents\MATLAB\Data\MNIST\Farsi Digit Dataset\hoda_training_images(60000).mat');
+    load('F:\Documents\MATLAB\Data\MNIST\Farsi Digit Dataset\hoda_remaining_images(22352).mat');
+    load('F:\Documents\MATLAB\Data\MNIST\Farsi Digit Dataset\hoda_test_images(20000).mat');
+    
+    figure(4);
     % randomly show 60 numbers of test data
-%     for i=1:60
-%         subplot(6, 10, i);
-%         rand_idx = randi(20000);
-%         imshow(test_images(:,:,rand_idx));
-%         title(test_labels(rand_idx));
-%         axis square;
-%     end
+    for i=1:60
+        subplot(6, 10, i);
+        rand_idx = randi(20000);
+        imshow(test_images(:,:,rand_idx));
+        title(test_labels(rand_idx));
+        axis square;
+    end
 
     
     
-
-mimg=im2double(imread('F:\Documents\MATLAB\Machine Learning\MR  ML Project\MNIST\lena.jpg'));
-nimg=mimg;
-[M,N]=size(mimg);
-cnt=0;
-for i=1:M-3
-    for j=1:N-3
-        cnt=cnt+1;
-        mpatch=mimg(i:i+2,j:j+2);
-        mpatch=mpatch(:);
-        npatch=nimg(i:i+2,j:j+2);
-        npatch=npatch(:);
-        patches(:,cnt)=npatch;
-        opatches(:,cnt)=mpatch;
-    end
-end
-
-    % Normalize the Image:
-    for i=1:cnt
-        min_ = min(opatches(:,i));
-        max_ = max(opatches(:,i));
-        range = max_ - min_;
-       for j=1:9
-           opatches(j,i)=(opatches(j,i)-min_) / range;
-       end
-        if(isnan(opatches(:,i)))
-           opatches(:,i)=0;
-        end
-    end
-
-
     % training data
-    trainig_inputs = reshape(opatches,[9,cnt]);
+    trainig_inputs = reshape(training_images,[32*32,60000]);
     number_of_training_samples = str2num(answer{7});
-    number_of_input_neurons = 9;
+    number_of_input_neurons = 32*32;
     % test data
-    test_inputs = reshape(opatches,[9,cnt]);
+    test_inputs = reshape(test_images,[32*32,20000]);
     
-%     % validation data
-%     % tmp = zeros(32,32,10000);
-%     tmp = remaining_images(:,:,1:10000);
-%     validation_images = reshape(tmp,[32*32,10000]);
-%     validation_labels = remaining_labels(1:10000);
-%     
+    % validation data
+    % tmp = zeros(32,32,10000);
+    tmp = remaining_images(:,:,1:10000);
+    validation_images = reshape(tmp,[32*32,10000]);
+    validation_labels = remaining_labels(1:10000);
+    
     
     %     num_of_samples = num2str(number_of_training_samples);%sapmles
     
     % Targets
-    labels = test_inputs;
+    labels = training_labels;
     
-%     tlabels = test_labels;
-%     
-%     timages = test_inputs;
-%     
-%     t_size =  size(test_inputs,2);
-%     tsamples = t_size;
+    tlabels = test_labels;
+    
+    timages = test_inputs;
+    
+    t_size =  size(test_inputs,2);
+    tsamples = t_size;
     
     %% =========== Create MLP Layer's  =============
     %
