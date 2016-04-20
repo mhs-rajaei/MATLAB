@@ -30,6 +30,8 @@ else
     else
         tsamples = samples;
     end
+    
+    tsamples_v = 10000;
 end
 
 
