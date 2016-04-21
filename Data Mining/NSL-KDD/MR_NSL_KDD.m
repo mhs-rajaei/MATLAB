@@ -90,37 +90,3 @@ clear all
 
 save('F:\Documents\MATLAB\Data\KDD\NSL-KDD Dataset\Processed with MATLAB\NSL-KDD Preprocessed_Numeric_2Class_Target.mat');
 
-clear all
-load('F:\Documents\MATLAB\Data\KDD\NSL-KDD Dataset\Processed with MATLAB\NSL-KDD Preprocessed_Numeric_2Class_Target.mat');
-%% Normalization
-% before normalizing we must replace NaN whit 0
-KDD_Training_p_num_2class_target(isnan(KDD_Training_p_num_2class_target)) = 0;
-KDD_Test_p_num_2class_target(isnan(KDD_Test_p_num_2class_target)) = 0;
-Twenty_Percent_KDD_Training_p_2class_target(isnan(Twenty_Percent_KDD_Training_p_2class_target)) = 0;
-KDD_Test_mines21_mum_2class_target(isnan(KDD_Test_mines21_mum_2class_target)) = 0;
-% number of columns that must be Normalized
-column = [1,8,23,13,29,11,17,19,32];
-% normalizing for each coulme number
-for i=1:length(column)
-    KDD_Training_p_num_2class_target(:,column(i)) = ...
-        Min_Max_Normalization(KDD_Training_p_num_2class_target(:,column(i)));
-    KDD_Test_p_num_2class_target(:,column(i)) = ...
-        Min_Max_Normalization(KDD_Test_p_num_2class_target(:,column(i)));
-    Twenty_Percent_KDD_Training_p_2class_target(:,column(i)) = ...
-        Min_Max_Normalization(Twenty_Percent_KDD_Training_p_2class_target(:,column(i)));
-    KDD_Test_mines21_mum_2class_target(:,column(i)) = ...
-        Min_Max_Normalization(KDD_Test_mines21_mum_2class_target(:,column(i)));
-end
-
-% number of columns that must be delated, afte delete each column you must
-% decrement index -> [21 22 25 26 27 28 29 30 40] == [21 21 23 23 23 23 23 23 32]
-column = [21 21 23 23 23 23 23 23 32];
-% deleting for each coulme number
-for i=1:length(column)
-    KDD_Training_p_num_2class_target(:,column(i)) =  [];
-    KDD_Test_p_num_2class_target(:,column(i)) =  [];
-    Twenty_Percent_KDD_Training_p_2class_target(:,column(i)) = [];
-    KDD_Test_mines21_mum_2class_target(:,column(i)) =  [];
-end
-
-
