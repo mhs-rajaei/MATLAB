@@ -8,23 +8,23 @@ KDD_Test_p_num_2class_target(isnan(KDD_Test_p_num_2class_target)) = 0;
 Twenty_Percent_KDD_Training_p_2class_target(isnan(Twenty_Percent_KDD_Training_p_2class_target)) = 0;
 KDD_Test_mines21_mum_2class_target(isnan(KDD_Test_mines21_mum_2class_target)) = 0;
 
-%% Deleting Columns
-% number of columns that must be delated, afte delete each column you must
-% decrement index -> [21 22 25 26 27 28 29 30 40] == [21 21 23 23 23 23 23 23 32]
-% column = [21 21 22 23 23 23 23 23 32];
-column = [21 22 25 26 27 28 29 30 40];
-% deleting for each coulme number
-% for i=1:length(column)
-%     KDD_Training_p_num_2class_target(:,column(i)) =  [];
-%     KDD_Test_p_num_2class_target(:,column(i)) =  [];
-%     Twenty_Percent_KDD_Training_p_2class_target(:,column(i)) = [];
-%     KDD_Test_mines21_mum_2class_target(:,column(i)) =  [];
-% end
-KDD_Training_p_num_2class_target(:,column) =  [];
-KDD_Test_p_num_2class_target(:,column) =  [];
-Twenty_Percent_KDD_Training_p_2class_target(:,column) = [];
-KDD_Test_mines21_mum_2class_target(:,column) =  [];
-
+% %% Deleting Columns
+% % number of columns that must be delated, afte delete each column you must
+% % decrement index -> [21 22 25 26 27 28 29 30 40] == [21 21 23 23 23 23 23 23 32]
+% % column = [21 21 22 23 23 23 23 23 32];
+% column = [21 22 25 26 27 28 29 30 40];
+% % deleting for each coulme number
+% % for i=1:length(column)
+% %     KDD_Training_p_num_2class_target(:,column(i)) =  [];
+% %     KDD_Test_p_num_2class_target(:,column(i)) =  [];
+% %     Twenty_Percent_KDD_Training_p_2class_target(:,column(i)) = [];
+% %     KDD_Test_mines21_mum_2class_target(:,column(i)) =  [];
+% % end
+% KDD_Training_p_num_2class_target(:,column) =  [];
+% KDD_Test_p_num_2class_target(:,column) =  [];
+% Twenty_Percent_KDD_Training_p_2class_target(:,column) = [];
+% KDD_Test_mines21_mum_2class_target(:,column) =  [];
+% 
 %% Normalization by "Normalization.m"
 KDD_Training_p_num_2class_target = Normalization(KDD_Training_p_num_2class_target);
 KDD_Test_p_num_2class_target = Normalization(KDD_Test_p_num_2class_target);

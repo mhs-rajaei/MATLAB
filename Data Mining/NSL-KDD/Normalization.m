@@ -16,7 +16,7 @@ for i=1:col_count
     selected_column = raw_matrix(:,i);
     maximum = max(selected_column);
     minimum = min(selected_column);
-    if maximum > 1
+%     if maximum > 1
 	    for j=1:size(selected_column,1)
 		    if selected_column(j) == 0
             matrix_normalized(j,i) = 0;
@@ -24,11 +24,11 @@ for i=1:col_count
             matrix_normalized(j,i) = (selected_column(j)-minimum) / (maximum - minimum);
 			end
 		end
-	else
-		for j=1:size(selected_column,1)
-		    matrix_normalized(j,i) = selected_column(j); % do not normalize and save the values directly
-		end
-	end	
+% 	else
+% 		for j=1:size(selected_column,1)
+% 		    matrix_normalized(j,i) = selected_column(j); % do not normalize and save the values directly
+% 		end
+% 	end	
 end
 %==================== End Normalizing =================================%
 normalized_vector = matrix_normalized;
