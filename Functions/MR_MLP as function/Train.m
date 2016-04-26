@@ -12,31 +12,14 @@ Accuracy_Test = zeros(1,iteration);
 Accuracy_Validation = zeros(1,iteration);
 check_validation = zeros(1,validation_check);
 
-if(hoda==true)
-    %i add this code to MR MNIST act like a function
-    samples  =number_of_training_samples;
-    images = trainig_inputs;
-    
-    if samples >= 20000
-        tsamples = 20000;
-    else
-        tsamples = samples;
-    end
-    
-    tsamples_v = 10000;
-else
-    if samples >= 10000
-        tsamples = 10000;
-    else
-        tsamples = samples;
-    end
-end
 
+samples  =number_of_training_samples;
+tsamples_v = 10000;
 
 validation = 0;
 index = 1;
 MSE = zeros(1,iteration);
-layer(L).MSE = zeros(10,samples);
+layer(L).MSE = zeros(layer(L).Size,samples);
 % layer(L).MSE2 = zeros(10,samples);
 counter = 0;
 
@@ -53,7 +36,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     for num_in=1:samples
         %% =========== Forward =============
         counter = counter +1;
-        target = Target(labels(num_in),layer(L).Size);
+        train_target = train_labels(num_in,:);
         
         for c=2:L
             if c==2
@@ -78,9 +61,9 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         
         
         % =========== Computing MSE  =================
-        layer(L).MSE(:,num_in) = (target - layer(L).a).^2;
+        layer(L).MSE(:,num_in) = (train_target - layer(L).a).^2;
         %% =========== Computing Delta's  =============
-        layer(L).delta = -(target - layer(L).a);
+        layer(L).delta = -(train_target - layer(L).a);
         %         if tanh_or_sigmoid==1 %tanh
         %             layer(L).delta = -(target - layer(L).a) .* ...
         %                 tanhypGradient(layer(L).z) ;
@@ -199,16 +182,16 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     %% TEST & Accuracy & MSE
     
     Train_or_Test = 0;% accuracy on Train Data
-    Accuracy_Train(epoch) = Test(layer,samples,Train_or_Test,L,labels,images,tanh_or_sigmoid)/samples;
+    Accuracy_Train(epoch) = Test(layer,samples,Train_or_Test,L,train_labels,train_set,tanh_or_sigmoid)/samples;
     %
     
     
     Train_or_Test = 1;% accuracy on Test Data
-    Accuracy_Test(epoch) = Test(layer,tsamples,Train_or_Test,L,tlabels,timages,tanh_or_sigmoid)/tsamples;
+    Accuracy_Test(epoch) = Test(layer,size(test_set,2),Train_or_Test,L,test_labels,test_set,tanh_or_sigmoid)/size(test_set,2);
     %
     Train_or_Test = 2;% accuracy on Validation Data
-    Accuracy_Validation(epoch) = Test(layer,tsamples_v,Train_or_Test,L,validation_labels,...
-        validation_images,tanh_or_sigmoid)/tsamples_v;
+    Accuracy_Validation(epoch) = Test(layer,size(validation_set,2),Train_or_Test,L,validation_labels,...
+        validation_set,tanh_or_sigmoid)/size(validation_set,2);
     
     % Compute Overal MSE
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;

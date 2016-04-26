@@ -1,12 +1,11 @@
-function test=Max_Rand_Activation(a,l,num_in)
+function test=Max_Rand_Activation(a,label)
     %Max Activation
-    activation= zeros(1,l);
+    activation= zeros(1,size(label,2));
     [~, index] = max(a, [], 2);
     activation(index)=1;
     
     %Target label
-    target= zeros(1,l);
-    target(num_in+1)=1;
+    target= label;
     
     if target == activation
         test = 1;

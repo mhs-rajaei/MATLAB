@@ -1,82 +1,51 @@
 %% =========== Start MR_MLP =============
-function MR_MLP(train_set,train_labels,  test_set,test_labales  ,validation_set,validation_labels)
-clc;
-clear all;
+function MR_MLP(train_set,train_labels,  test_set,test_labels  ,validation_set,validation_labels)
+% train_set = [input_nurons , number_of_training_samples]
+% train_labels = [number_of_training_samples , number of output neurons]
+% target = [1 , number of output neurons] 
 
+%% input dialog
 prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','alfa:(Momentum coefficient)'...
     ,'lambda:(Regularization coefficient)','Validation check','Iteration','Number of samples',...
     'Number of layers','Batch size','tanh or sigmoid(1 for tanh -2  for sigmoid)'};
 dlg_title = 'Input';
 num_lines = 1;
-defaultans = {'1','0.3','0.9','0','100','100',num2str(size(train_set,2)),'3','100','2'};
+defaultans = {'1','0.3','0.9','0','100','100',num2str(size(train_set,1)),'3','100','2'};
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
 
-    
-    % training data
-    %rainig_inputs = reshape(training_images,[32*32,60000]);
-    number_of_training_samples = str2num(answer{7});
-    number_of_input_neurons = size(train_set,1);
-
-    %% =========== Create MLP Layer's  =============
-    %
-    %
-    %
+    %% =========== Create MLP Layer's  =====================================================
     % struct for layers of MLP
     layer = struct('Size',[],'wts',[],'z',[],'a',[],'delta',[],'DW',[]...
         ,'bias',[],'MSE',[],'delta_W',[],'delta_bias',[],'big_delta',[],...
         'big_delta_bias',[],'delta_W_last',[]);
     parameter = struct('learning_rate',[],'alfa',[],'lambda',[],'epsilon',[],'method',[]);
+    %% =======================set paremeters==========================
     %value epsilon use for initialize random weights
     parameter.epsilon = 0.12;
-    
-    
-    % temp=strcat('Enter the Learning method(1 for Batch method or 0 for Online method) \n');
-    % parameter.method = input(temp);
+    % learning method(online or batch)
     parameter.method =str2num(answer{1});
-    
-    %set paremeters
-    % temp=strcat('Enter the learning rate value \n');
-    % parameter.learning_rate = input(temp);
+    % learning_rate
     parameter.learning_rate =str2num(answer{2});
-    
-    %learning_rate=0.3;
-    % temp=strcat('Enter the momentum value \n');
-    % parameter.alfa = input(temp);
+    % momentum value
     parameter.alfa =str2num(answer{3});
-    
-    % temp=strcat('Enter the regularization value \n');
-    % parameter.lambda = input(temp);
+    % regularization
     parameter.lambda =str2num(answer{4});
-    
-    % temp=strcat('Enter the validation check value \n');
-    % validation_check = input(temp);
+    % validation check value
     validation_check =str2num(answer{5});
-    
-    % epoch number
-    % temp=strcat('Enter the iteration value \n');
-    % iteration = input(temp);
+    % epoch number(iteration)
     iteration =str2num(answer{6});
-    
     % Number of samples
-    % temp=strcat('Enter the number of samples \n');
-    % samples = input(temp);
     number_of_training_samples =str2num(answer{7});
-    
-    % prompt = 'Enter the number of layers\n';
-    % L = input(prompt);
+    % number of layers
     L =str2num(answer{8});
-    
-    % prompt = 'Enter the batch size(for mini batch training)\n';
-    % L = input(prompt);
+    % batch size(for mini batch training)\n';
     batch_size =str2num(answer{9});
-    
-    % temp=strcat('Enter Train(1) or Train2_orig(2) or mini batch(3) or Train7(7) \n');
-    train_file = str2num(answer{10});
-    
-    
     % temp=strcat('Enter tanh(1) or sigmoid(2) (1 for tanh and 2  for sigmoid\n');
-    tanh_or_sigmoid = str2num(answer{11});
-    
+    tanh_or_sigmoid = str2num(answer{10});
+     % training data
+%% ===================================================================================================
+    % train_set = [number_of_input_neurons , number_of_training_samples]
+    number_of_input_neurons = size(train_set,2);
     
     layer(1).Size=number_of_input_neurons;
     layer(1).a.Size=[layer(1).Size];
@@ -84,8 +53,8 @@ answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
     layer(1).a.Range=[];
     layer(1).a = zeros(layer(1).Size,number_of_training_samples);
     
-    layer(1).a = train_set * number_of_training_samples ;%size input: number_of_input_neurons * number_of_samples
-    
+    layer(1).a = train_set(1:number_of_training_samples,1:number_of_input_neurons)';
+%     layer(1).a(1:layer(1).Size,1:samples) = images(1:layer(1).Size,1:samples);
     
     % set layers parameters
     for c=2:L
