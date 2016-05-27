@@ -14,15 +14,14 @@ check_validation = zeros(1,validation_check);
 
 
 samples  =number_of_training_samples;
-tsamples_v = 60000;
+tsamples_v = size(test2_2,1);
 
 validation = 0;
 index = 1;
 MSE = zeros(1,iteration);
 layer(L).MSE = zeros(layer(L).Size,samples);
-% layer(L).MSE2 = zeros(10,samples);
+
 counter = 0;
-file_index = 1;
 % Create figure
 figure1 = figure;
 num_in =1;
@@ -46,9 +45,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             end
             
             if isnan(layer(c).z)
-                fprintf('\n');
-                fprintf('\n');
-                fprintf('Please Change input parameter to prevent NaN in Calculation');
+                fprintf('\n');fprintf('\n'); fprintf('Please Change input parameter to prevent NaN in Calculation');
                 error('Error We Find NaN in Calculation!!!!!!!!!!!!!!!');
             end
             
@@ -58,21 +55,12 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
                 layer(c).a = sigmoid(layer(c).z);
             end
         end
-        
-        
+
         % =========== Computing MSE  =================
         layer(L).MSE(:,num_in) = (train_target - layer(L).a).^2;
         %% =========== Computing Delta's  =============
         layer(L).delta = -(train_target - layer(L).a);
-        %         if tanh_or_sigmoid==1 %tanh
-        %             layer(L).delta = -(target - layer(L).a) .* ...
-        %                 tanhypGradient(layer(L).z) ;
-        %         else %sigmoid
-        %             layer(L).delta = -(target - layer(L).a) .* ...
-        %                 sigmoidGradient(layer(L).z);
-        %         end
-        
-        
+       
         % Compute Other Delta's
         hl=L-1;
         while(hl>1)
@@ -173,49 +161,6 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             end
             counter = 0;
         end
-        %% Process next file
-        if(num_in == samples && file_index <= 152)
-            % read next file
-            file_index = file_index +1
-            path = 'F:\Documents\R\Kyoto\Processed Dataset\train2\CSV\';
-            file = strcat(num2str(file_index),'.csv');
-            f = strcat(path,file)
-            % read csv file
-            [training_data,~,~] = xlsread(strcat(path,file));
-            %% preparing target labels
-            % train targets
-            train_labels = zeros(2,size(training_data,1))';
-            for i=1:size(training_data,1)
-                if training_data(i,size(training_data,2))==0
-                    train_labels(i,1) = 1;
-                else
-                    train_labels(i,2) = 1;
-                end
-            end
-            
-            train_set = training_data(:,1:size(training_data,2)-1)';
-            clear('training_data')
-            
-            number_of_input_neurons = size(train_set,1);
-            
-            number_of_training_samples = size(train_set,2);
-            %layer(1).Size=number_of_input_neurons;
-%             layer(1).a.Size=number_of_input_neurons;
-%             layer(1).a.Type='double';
-%             layer(1).a.Range=[];
-            layer(1).a = zeros(number_of_input_neurons,number_of_training_samples);
-            
-            layer(1).a = train_set(1:number_of_input_neurons,1:number_of_training_samples);
-            
-            
-            samples  =number_of_training_samples;
-%             num_in = 1;
-%             layer(L).MSE = zeros(layer(L).Size,samples);
-            % layer(L).MSE2 = zeros(10,samples);
-            if(file_index == 152)
-                file_index = 1;
-            end
-        end
         
     end
     
@@ -233,8 +178,8 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     Accuracy_Test(epoch) = Test(layer,size(test_set,2),Train_or_Test,L,test_labels,test_set,tanh_or_sigmoid)/size(test_set,2);
     %
     Train_or_Test = 2;% accuracy on Validation Data
-    Accuracy_Validation(epoch) = Test(layer,size(validation_set,2),Train_or_Test,L,validation_labels,...
-        validation_set,tanh_or_sigmoid)/size(validation_set,2);
+    Accuracy_Validation(epoch) = Test(layer,size(test_set2,2),Train_or_Test,L,test_2_labels,...
+        test_set2,tanh_or_sigmoid)/size(test_set2,2);
     
     % Compute Overal MSE
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;

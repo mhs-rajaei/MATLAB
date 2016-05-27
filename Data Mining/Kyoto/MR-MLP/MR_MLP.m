@@ -1,52 +1,9 @@
 %% =========== Start MR_MLP =============
-% function MR_MLP(train_set,train_labels,  test_set,test_labels  ,validation_set,validation_labels)
+% function MR_MLP(train_set,train_labels,  test_set,test_labels  ,test_set2,validation_labels)
 % train_set = [input_nurons , number_of_training_samples]
 % train_labels = [number_of_training_samples , number of output neurons]
 % target = [1 , number of output neurons] 
-clear all;
 
-[training_data,~,~] = xlsread('F:\Documents\R\Kyoto\Processed Dataset\train2\CSV\1.csv');
-%% preparing target labels
-% train targets
-train_labels = zeros(2,size(training_data,1))';
-for i=1:size(training_data,1)
-    if training_data(i,size(training_data,2))==0
-        train_labels(i,1) = 1;
-    else
-        train_labels(i,2) = 1;
-    end
-end
-[validation_data,~,~] = xlsread('F:\Documents\R\Kyoto\Processed Dataset\test2-2\CSV\test2-2.csv');
-% validation targets
-validation_labels = zeros(2,size(validation_data,1))';
-for i=1:size(validation_data,1)
-    if validation_data(i,size(validation_data,2))==0
-        validation_labels(i,1) = 1;
-    else
-        validation_labels(i,2) = 1;
-    end
-end
-
-[test_data,~,~] = xlsread('F:\Documents\R\Kyoto\Processed Dataset\test2-1\CSV\test2-1.csv');
-% test targets
-test_labels = zeros(2,size(test_data,1))';
-for i=1:size(test_data,1)
-    if test_data(i,size(test_data,2))==0
-        test_labels(i,1) = 1;
-    else
-        test_labels(i,2) = 1;
-    end
-end
-% 
-% train_set = [input_nurons , number_of_training_samples]
-% train_labels = [number_of_training_samples , number of output neurons]
-% target = [1 , number of output neurons]
-train_set = training_data(:,1:size(training_data,2)-1)';
-clear('training_data')
-validation_set = validation_data(:,1:size(validation_data,2)-1)';
-clear('validation_data')
-test_set = test_data(:,1:size(test_data,2)-1)';
-clear('test_data')
 
 %% input dialog
 prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','alfa:(Momentum coefficient)'...
