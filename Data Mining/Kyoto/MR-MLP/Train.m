@@ -14,7 +14,7 @@ check_validation = zeros(1,validation_check);
 
 
 samples  =number_of_training_samples;
-tsamples_v = size(test2_2,1);
+tsamples_v = size(test_2_labels,1);
 
 validation = 0;
 index = 1;
@@ -194,10 +194,10 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             'Color',[0.600000023841858 0.200000002980232 0]);
         
         plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
-        set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
+        set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
         
         plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
-        set(plot3,'DisplayName','Accuracy Validation','LineWidth',3,'LineStyle','-.',...
+        set(plot3,'DisplayName','Accuracy Test 2','LineWidth',3,'LineStyle','-.',...
             'Color',[0 0 0.5]);
         
         
@@ -268,13 +268,13 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
 end
 
 % Create multiple lines using matrix input to plot
-plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
+plot1 = plot(Accuracy_Train(1:epoch));hold on;
 set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
     'Color',[0.600000023841858 0.200000002980232 0]);
 plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
-set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
+set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
 plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
-set(plot3,'DisplayName','Accuracy Validation','LineWidth',3,'LineStyle','-.',...
+set(plot3,'DisplayName','Accuracy Test 2','LineWidth',3,'LineStyle','-.',...
     'Color',[0 0 0.5]);
 % Set the remaining axes properties
 set(axes1,'XGrid','on','YGrid','on');
