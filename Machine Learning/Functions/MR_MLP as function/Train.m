@@ -14,17 +14,18 @@ check_validation = zeros(1,validation_check);
 
 
 samples  =number_of_training_samples;
-% tsamples_v = size(test_2_labels,1);
+tsamples_v = 10000;
 
 validation = 0;
 index = 1;
 MSE = zeros(1,iteration);
 layer(L).MSE = zeros(layer(L).Size,samples);
-
+% layer(L).MSE2 = zeros(10,samples);
 counter = 0;
+
 % Create figure
 figure1 = figure;
-num_in =1;
+
 % Create axes
 axes1 = axes('Parent',figure1);
 hold(axes1,'on');
@@ -45,7 +46,9 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             end
             
             if isnan(layer(c).z)
-                fprintf('\n');fprintf('\n'); fprintf('Please Change input parameter to prevent NaN in Calculation');
+                fprintf('\n');
+                fprintf('\n');
+                fprintf('Please Change input parameter to prevent NaN in Calculation');
                 error('Error We Find NaN in Calculation!!!!!!!!!!!!!!!');
             end
             
@@ -55,12 +58,21 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
                 layer(c).a = sigmoid(layer(c).z);
             end
         end
-
+        
+        
         % =========== Computing MSE  =================
         layer(L).MSE(:,num_in) = (train_target - layer(L).a).^2;
         %% =========== Computing Delta's  =============
         layer(L).delta = -(train_target - layer(L).a);
-       
+        %         if tanh_or_sigmoid==1 %tanh
+        %             layer(L).delta = -(target - layer(L).a) .* ...
+        %                 tanhypGradient(layer(L).z) ;
+        %         else %sigmoid
+        %             layer(L).delta = -(target - layer(L).a) .* ...
+        %                 sigmoidGradient(layer(L).z);
+        %         end
+        
+        
         % Compute Other Delta's
         hl=L-1;
         while(hl>1)
@@ -177,9 +189,9 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     Train_or_Test = 1;% accuracy on Test Data
     Accuracy_Test(epoch) = Test(layer,size(test_set,2),Train_or_Test,L,test_labels,test_set,tanh_or_sigmoid)/size(test_set,2);
     %
-%     Train_or_Test = 2;% accuracy on Validation Data
-%     Accuracy_Validation(epoch) = Test(layer,size(test_set2,2),Train_or_Test,L,test_2_labels,...
-%         test_set2,tanh_or_sigmoid)/size(test_set2,2);
+    Train_or_Test = 2;% accuracy on Validation Data
+    Accuracy_Validation(epoch) = Test(layer,size(validation_set,2),Train_or_Test,L,validation_labels,...
+        validation_set,tanh_or_sigmoid)/size(validation_set,2);
     
     % Compute Overal MSE
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;
@@ -194,11 +206,11 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             'Color',[0.600000023841858 0.200000002980232 0]);
         
         plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
-        set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
+        set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
         
-%         plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
-%         set(plot3,'DisplayName','Accuracy Test 2','LineWidth',3,'LineStyle','-.',...
-%             'Color',[0 0 0.5]);
+        plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
+        set(plot3,'DisplayName','Accuracy Validation','LineWidth',3,'LineStyle','-.',...
+            'Color',[0 0 0.5]);
         
         
         % Set the remaining axes properties
@@ -248,34 +260,34 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             parameter.alfa = 1.05 *parameter.alfa;
         end
     end
-%     %% Validation check
-%     if epoch == 1
-%         validation = Accuracy_Validation(epoch);
-%     end
+    %% Validation check
+    if epoch == 1
+        validation = Accuracy_Validation(epoch);
+    end
     
-%     if Accuracy_Validation(epoch)<=validation
-%         index = index+1;
-%     else
-%         validation = Accuracy_Validation(epoch);
-%         index = 0;
-%     end
+    if Accuracy_Validation(epoch)<=validation
+        index = index+1;
+    else
+        validation = Accuracy_Validation(epoch);
+        index = 0;
+    end
     
-%     if index == validation_check
-%         break;
-%     end
+    if index == validation_check
+        break;
+    end
     
     %%
 end
 
 % Create multiple lines using matrix input to plot
-plot1 = plot(Accuracy_Train(1:epoch));hold on;
+plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
 set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
     'Color',[0.600000023841858 0.200000002980232 0]);
 plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
-set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
-% plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
-% set(plot3,'DisplayName','Accuracy Test 2','LineWidth',3,'LineStyle','-.',...
-%     'Color',[0 0 0.5]);
+set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
+plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
+set(plot3,'DisplayName','Accuracy Validation','LineWidth',3,'LineStyle','-.',...
+    'Color',[0 0 0.5]);
 % Set the remaining axes properties
 set(axes1,'XGrid','on','YGrid','on');
 % Create legend
