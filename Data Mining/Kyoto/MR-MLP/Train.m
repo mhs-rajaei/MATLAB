@@ -12,7 +12,7 @@ Accuracy_Train = struct('acc',[],'TP',[],'TN',[],'FP',[],'FN',[]);
 % Accuracy_Test = zeros(1,iteration);
 Accuracy_Test = struct('acc',[],'TP',[],'TN',[],'FP',[],'FN',[]);
 % Accuracy_Validation = zeros(1,iteration);
-Accuracy_Test2 = struct('acc',[],'TP',[],'TN',[],'FP',[],'FN',[]);
+% Accuracy_Test2 = struct('acc',[],'TP',[],'TN',[],'FP',[],'FN',[]);
 check_validation = zeros(1,validation_check);
 
 
@@ -190,14 +190,14 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     Accuracy_Test(epoch).FP = test_result.FP;
     Accuracy_Test(epoch).TN = test_result.TN;
     
-        Train_or_Test = 2;% accuracy on Validation Data
-    test2_result = Test(layer,size(test_set2,2),Train_or_Test,L,test_2_labels,...
-        test_set2,tanh_or_sigmoid);
-    Accuracy_Test2(epoch).acc = (test2_result.TP + test2_result.TN) /size(test_set2,2); 
-    Accuracy_Test(epoch).TP = test2_result.TP;
-    Accuracy_Test(epoch).TN = test2_result.TN;
-    Accuracy_Test(epoch).FP = test2_result.FP;
-    Accuracy_Test(epoch).TN = test2_result.TN;
+%         Train_or_Test = 2;% accuracy on Validation Data
+%     test2_result = Test(layer,size(test_set2,2),Train_or_Test,L,test_2_labels,...
+%         test_set2,tanh_or_sigmoid);
+%     Accuracy_Test2(epoch).acc = (test2_result.TP + test2_result.TN) /size(test_set2,2); 
+%     Accuracy_Test(epoch).TP = test2_result.TP;
+%     Accuracy_Test(epoch).TN = test2_result.TN;
+%     Accuracy_Test(epoch).FP = test2_result.FP;
+%     Accuracy_Test(epoch).TN = test2_result.TN;
     
     % Compute Overal MSE
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;
