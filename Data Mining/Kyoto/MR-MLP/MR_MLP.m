@@ -5,9 +5,13 @@
 % target = [1 , number of output neurons] 
 
 clear all;
-%load('F:\Documents\MATLAB\Data\Kyoto\training_data.mat');
+% load('F:\Documents\MATLAB\Data\Kyoto\training_data.mat');
 load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\processed_train_selected_normal_plus_attck.mat')
 %datanum = cell2mat(data');
+
+% load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\processed_test_selected_normal_plus_attck.mat')
+% processed_train_selected_normal_plus_attck = processed_test_selected_normal_plus_attck;
+% clear('processed_test_selected_normal_plus_attck')
 %% preparing target labels
 % train targets
 train_labels = zeros(2,size(processed_train_selected_normal_plus_attck,1))';
@@ -25,6 +29,10 @@ clear('processed_train_selected_normal_plus_attck')
 %%%%%%%%%%%%%%%%%%%%%%%5
 % load('F:\Documents\MATLAB\Data\Kyoto\test_data.mat');
 load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\processed_test_selected_normal_plus_attck.mat')
+
+% load('F:\Documents\MATLAB\Data\Kyoto\biased test set from unselected_normal_plus_attck.mat');
+% processed_test_selected_normal_plus_attck = test_data;
+% clear('test_data')
 % test2-1 targets
 test_labels = zeros(2,size(processed_test_selected_normal_plus_attck,1))';
 for i=1:size(processed_test_selected_normal_plus_attck,1)
@@ -38,17 +46,20 @@ test_set = processed_test_selected_normal_plus_attck(:,1:size(processed_test_sel
 clear('processed_test_selected_normal_plus_attck')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % load('F:\Documents\MATLAB\Data\Kyoto\test_data2.mat');
+load('F:\Documents\MATLAB\Data\Kyoto\biased test set from unselected_normal_plus_attck.mat');
+test_data2 = test_data;
+clear('test_data')
 % % tets2-2 targets
-% test_2_labels = zeros(2,size(test_data2,1))';
-% for i=1:size(test_data2,1)
-%     if test_data2(i,size(test_data2,2))==1
-%         test_2_labels(i,1) = 1;
-%     else
-%         test_2_labels(i,2) = 1;
-%     end
-% end
-% test_set2 = test_data2(:,1:size(test_data2,2)-1)';
-% clear('test_data2')
+test_2_labels = zeros(2,size(test_data2,1))';
+for i=1:size(test_data2,1)
+    if test_data2(i,size(test_data2,2))==1
+        test_2_labels(i,1) = 1;
+    else
+        test_2_labels(i,2) = 1;
+    end
+end
+test_set2 = test_data2(:,1:size(test_data2,2)-1)';
+clear('test_data2')
 
 
 

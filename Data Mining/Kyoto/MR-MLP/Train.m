@@ -7,9 +7,12 @@ delta_W_last=zeros();
 delta_theta=zeros();
 delta_theta_last=zeros();
 
-Accuracy_Train = zeros(1,iteration);
-Accuracy_Test = zeros(1,iteration);
-Accuracy_Validation = zeros(1,iteration);
+% Accuracy_Train = zeros(1,iteration);
+Accuracy_Train = struct('acc',[],'TP',[],'TN',[],'FP',[],'FN',[]);
+% Accuracy_Test = zeros(1,iteration);
+Accuracy_Test = struct('acc',[],'TP',[],'TN',[],'FP',[],'FN',[]);
+% Accuracy_Validation = zeros(1,iteration);
+Accuracy_Test2 = struct('acc',[],'TP',[],'TN',[],'FP',[],'FN',[]);
 check_validation = zeros(1,validation_check);
 
 
@@ -170,46 +173,69 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     %% TEST & Accuracy & MSE
     
     Train_or_Test = 0;% accuracy on Train Data
-    Accuracy_Train(epoch) = Test(layer,samples,Train_or_Test,L,train_labels,train_set,tanh_or_sigmoid)/samples;
+    train_result = Test(layer,samples,Train_or_Test,L,train_labels,train_set,tanh_or_sigmoid);
     %
-    
+    Accuracy_Train(epoch).acc = (train_result.TP + train_result.TN) /samples;
+    Accuracy_Train(epoch).TP = train_result.TP;
+    Accuracy_Train(epoch).TN = train_result.TN;
+    Accuracy_Train(epoch).FP = train_result.FP;
+    Accuracy_Train(epoch).FN = train_result.FN;
     
     Train_or_Test = 1;% accuracy on Test Data
-    Accuracy_Test(epoch) = Test(layer,size(test_set,2),Train_or_Test,L,test_labels,test_set,tanh_or_sigmoid)/size(test_set,2);
+    test_result = Test(layer,size(test_set,2),Train_or_Test,L,test_labels,test_set,tanh_or_sigmoid);
     %
-%     Train_or_Test = 2;% accuracy on Validation Data
-%     Accuracy_Validation(epoch) = Test(layer,size(test_set2,2),Train_or_Test,L,test_2_labels,...
-%         test_set2,tanh_or_sigmoid)/size(test_set2,2);
+    Accuracy_Test(epoch).acc = (test_result.TP + test_result.TN) /size(test_set,2);
+    Accuracy_Test(epoch).TP = test_result.TP;
+    Accuracy_Test(epoch).TN = test_result.TN;
+    Accuracy_Test(epoch).FP = test_result.FP;
+    Accuracy_Test(epoch).TN = test_result.TN;
+    
+        Train_or_Test = 2;% accuracy on Validation Data
+    test2_result = Test(layer,size(test_set2,2),Train_or_Test,L,test_2_labels,...
+        test_set2,tanh_or_sigmoid);
+    Accuracy_Test2(epoch).acc = (test2_result.TP + test2_result.TN) /size(test_set2,2); 
+    Accuracy_Test(epoch).TP = test2_result.TP;
+    Accuracy_Test(epoch).TN = test2_result.TN;
+    Accuracy_Test(epoch).FP = test2_result.FP;
+    Accuracy_Test(epoch).TN = test2_result.TN;
     
     % Compute Overal MSE
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;
     
     
     
-    if epoch >1
-        
-        % Create multiple lines using matrix input to plot
-        plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
-        set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
-            'Color',[0.600000023841858 0.200000002980232 0]);
-        
-        plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
-        set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
-        
-%         plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
+%     if epoch >1
+%         
+%         % Create multiple lines using matrix input to plot
+%         plot1 = plot(Accuracy_Train(1:epoch-1).acc);hold on;
+%         set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
+%             'Color',[0.600000023841858 0.200000002980232 0]);
+%         
+%         plot2 = plot(Accuracy_Test(1:epoch-1).acc);hold on;
+%         set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
+%         
+%         plot3 = plot(Accuracy_Test2(1:epoch-1).acc);hold on;
 %         set(plot3,'DisplayName','Accuracy Test 2','LineWidth',3,'LineStyle','-.',...
 %             'Color',[0 0 0.5]);
-        
-        
-        % Set the remaining axes properties
-        set(axes1,'XGrid','on','YGrid','on');
-        
-        % Create legend
-        legend('show');
-        set(legend,...
-            'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
-        drawnow
-    end
+%         
+%         % Create xlabel
+%         xlabel({'Iteration'});
+% 
+%         % Create ylabel
+%         ylabel({'Accuracy'});
+% 
+%         % Create title
+%         title({'Accuracy per Iteration'});
+% 
+%         % Set the remaining axes properties
+%         set(axes1,'XGrid','on','YGrid','on');
+%         
+%         % Create legend
+%         legend('show');
+%         set(legend,...
+%             'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
+%         drawnow
+%     end
     
     %     close all;
     
@@ -237,10 +263,10 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     
     % or
     if epoch>1
-        if (Accuracy_Test(epoch)/Accuracy_Test(epoch-1))<1
+        if (Accuracy_Test(epoch).acc/Accuracy_Test(epoch-1).acc)<1
             parameter.learning_rate = 0.7 * parameter.learning_rate;
             parameter.alfa = 0.7 * parameter.alfa;
-        elseif ((Accuracy_Test(epoch)/Accuracy_Test(epoch-1))>=1) & ((Accuracy_Test(epoch)/Accuracy_Test(epoch-1))<=1.04)
+        elseif ((Accuracy_Test(epoch).acc/Accuracy_Test(epoch-1).acc)>=1) & ((Accuracy_Test(epoch).acc/Accuracy_Test(epoch-1).acc)<=1.04)
             parameter.learning_rate = parameter.learning_rate;
             parameter.alfa =  parameter.alfa;
         else
@@ -268,21 +294,29 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
 end
 
 % Create multiple lines using matrix input to plot
-plot1 = plot(Accuracy_Train(1:epoch));hold on;
-set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
-    'Color',[0.600000023841858 0.200000002980232 0]);
-plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
-set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
-% plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
+% plot1 = plot(Accuracy_Train(1:epoch).acc);hold on;
+% set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
+%     'Color',[0.600000023841858 0.200000002980232 0]);
+% plot2 = plot(Accuracy_Test(1:epoch-1).acc);hold on;
+% set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
+% plot3 = plot(Accuracy_Test2(1:epoch-1).acc);hold on;
 % set(plot3,'DisplayName','Accuracy Test 2','LineWidth',3,'LineStyle','-.',...
 %     'Color',[0 0 0.5]);
-% Set the remaining axes properties
-set(axes1,'XGrid','on','YGrid','on');
-% Create legend
-legend('show');
-set(legend,...
-    'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
-drawnow;
+% % Create xlabel
+% xlabel({'Iteration'});
+% 
+% % Create ylabel
+% ylabel({'Accuracy'});
+% 
+% % Create title
+% title({'Accuracy per Iteration'});
+% % Set the remaining axes properties
+% set(axes1,'XGrid','on','YGrid','on');
+% % Create legend
+% legend('show');
+% set(legend,...
+%     'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
+% drawnow;
 
 draw_MSE(MSE);
 
