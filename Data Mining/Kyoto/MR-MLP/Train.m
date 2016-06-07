@@ -204,38 +204,40 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     
     
     
-%     if epoch >1
-%         
-%         % Create multiple lines using matrix input to plot
-%         plot1 = plot(Accuracy_Train(1:epoch-1).acc);hold on;
-%         set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
-%             'Color',[0.600000023841858 0.200000002980232 0]);
-%         
-%         plot2 = plot(Accuracy_Test(1:epoch-1).acc);hold on;
-%         set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
-%         
+    if epoch >1
+        
+        % Create multiple lines using matrix input to plot
+        t1(1:epoch-1) = Accuracy_Train(1:epoch-1).acc;
+        % Create multiple lines using matrix input to plot
+        plot1 = plot(t1(:));hold on;
+        set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
+            'Color',[0.600000023841858 0.200000002980232 0]);
+        t2(1:epoch-1) = Accuracy_Test(1:epoch-1).acc;
+        plot2 = plot(t2(:));hold on;
+        set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
+        
 %         plot3 = plot(Accuracy_Test2(1:epoch-1).acc);hold on;
 %         set(plot3,'DisplayName','Accuracy Test 2','LineWidth',3,'LineStyle','-.',...
 %             'Color',[0 0 0.5]);
-%         
-%         % Create xlabel
-%         xlabel({'Iteration'});
-% 
-%         % Create ylabel
-%         ylabel({'Accuracy'});
-% 
-%         % Create title
-%         title({'Accuracy per Iteration'});
-% 
-%         % Set the remaining axes properties
-%         set(axes1,'XGrid','on','YGrid','on');
-%         
-%         % Create legend
-%         legend('show');
-%         set(legend,...
-%             'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
-%         drawnow
-%     end
+        
+        % Create xlabel
+        xlabel({'Iteration'});
+
+        % Create ylabel
+        ylabel({'Accuracy'});
+
+        % Create title
+        title({'Accuracy per Iteration'});
+
+        % Set the remaining axes properties
+        set(axes1,'XGrid','on','YGrid','on');
+        
+        % Create legend
+        legend('show');
+        set(legend,...
+            'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
+        drawnow
+    end
     
     %     close all;
     
@@ -293,11 +295,13 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     %%
 end
 
+t1(1:epoch-1) = Accuracy_Train(1:epoch-1).acc;
 % Create multiple lines using matrix input to plot
-plot1 = plot(Accuracy_Train(1:epoch-1).acc);hold on;
+plot1 = plot(t1(:));hold on;
 set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
     'Color',[0.600000023841858 0.200000002980232 0]);
-plot2 = plot(Accuracy_Test(1:epoch-1).acc);hold on;
+t2(1:epoch-1) = Accuracy_Test(1:epoch-1).acc;
+plot2 = plot(t2(:));hold on;
 set(plot2,'DisplayName','Accuracy Test 1','LineWidth',3,'Color',[0 1 0]);
 % plot3 = plot(Accuracy_Test2(1:epoch-1).acc);hold on;
 % set(plot3,'DisplayName','Accuracy Test 2','LineWidth',3,'LineStyle','-.',...

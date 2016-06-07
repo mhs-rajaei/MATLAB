@@ -6,18 +6,18 @@
 
 clear all;
 
-% load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\processed_test_selected_normal_plus_attck.mat')
-% processed_train_selected_normal_plus_attck = processed_test_selected_normal_plus_attck;
-% clear('processed_test_selected_normal_plus_attck')
+load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\processed_train_selected_normal_plus_attck.mat')
+processed_train_selected_normal_plus_attck = processed_train_selected_normal_plus_attck;
+clear('processed_test_selected_normal_plus_attck')
 % p2
-load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\p4\train_kyoto_data.mat')
-processed_train_selected_normal_plus_attck = training_data;
-clear('training_data');
+% load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\p4\train_kyoto_data.mat')
+% processed_train_selected_normal_plus_attck = training_data;
+% clear('training_data');
 %% preparing target labels
 % train targets
 train_labels = zeros(2,size(processed_train_selected_normal_plus_attck,1))';
 for i=1:size(processed_train_selected_normal_plus_attck,1)
-    if processed_train_selected_normal_plus_attck(i,size(processed_train_selected_normal_plus_attck,2))==1
+    if processed_train_selected_normal_plus_attck(i,size(processed_train_selected_normal_plus_attck,2))~=1
         train_labels(i,1) = 1;
     else
         train_labels(i,2) = 1;
@@ -29,17 +29,16 @@ train_set = processed_train_selected_normal_plus_attck(:,1:size(processed_train_
 clear('processed_train_selected_normal_plus_attck')
 %%%%%%%%%%%%%%%%%%%%%%%5
 
-% load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\biased test set from unselected_normal_plus_attck.mat');
+load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\processed_test_selected_normal_plus_attck.mat');
+
+% p2
+% load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\p4\test_kyoto_data.mat');
 % processed_test_selected_normal_plus_attck = test_data;
 % clear('test_data')
-% p2
-load('F:\Documents\R\Kyoto\Processed Dataset\preprocessed\mtalab\p4\test_kyoto_data.mat');
-processed_test_selected_normal_plus_attck = test_data;
-clear('test_data')
 % test2-1 targets
 test_labels = zeros(2,size(processed_test_selected_normal_plus_attck,1))';
 for i=1:size(processed_test_selected_normal_plus_attck,1)
-    if processed_test_selected_normal_plus_attck(i,size(processed_test_selected_normal_plus_attck,2))==1
+    if processed_test_selected_normal_plus_attck(i,size(processed_test_selected_normal_plus_attck,2))~=1
         test_labels(i,1) = 1;
     else
         test_labels(i,2) = 1;
