@@ -1,15 +1,15 @@
 function [parents, objective_fun_values, offsprings, MEOEG,j] = evolution_strategy(fun, mu, lambda, gen, sel, xover_obj,...
-    xover_strategy, u, objective_value,output_vector_len, n, limits,e,sc,m_xover_type,pm)
+    xover_strategy, u,output_vector_len, n, limits,e,sc,m_xover_type,pm,f)
 %% Initialization:
-[parents,objective_fun_values,offsprings,par_error,MEOEG,e,sigma, alpha] = initialize(mu, n, limits,gen,u,objective_value,output_vector_len,e);
+[parents,objective_fun_values,offsprings,parent_fitness,MEOEG,e,sigma, alpha] = initialize(mu, n, limits,gen,u,output_vector_len,e,f);
 
 j      = 1;                           % Gnerations counter
 jj     = 0;                           % Stagnation counter
 
 %% Begin ES
-while ((j < gen) && (min(par_error) > e))
+while (j < gen)%&& (abs(MEOEG(j)) > e)
     %% Print report:
-    fprintf('\tGeneration j = %4d,  fitness = %g\n',j,min(par_error));
+    fprintf('\tGeneration j = %4d,  fitness = %g\n',j,MEOEG(j));
     
     %% Crossover and mutation types
     switch m_xover_type
@@ -24,12 +24,13 @@ while ((j < gen) && (min(par_error) > e))
             %% Evaluation:
             new_value = zeros(output_vector_len,lambda);
             for i = 1:lambda
-                new_value(:,i) = Ackley(mut_offspring(:,i),u);
+                new_value(:,i) = F(mut_offspring(:,i),u,f);
             end
-            off_error = abs(objective_value - new_value(1,:));
+%             offspring_fitness = abs(objective_value - new_value(1,:));
+            offspring_fitness = new_value;
             
             %% Survivor_selection
-            [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, off_error, par_error, mut_offspring, mut_sigma, parents{j}, sigma, mut_alpha, alpha);
+            [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, offspring_fitness, parent_fitness, mut_offspring, mut_sigma, parents{j}, sigma, mut_alpha, alpha);
         %% Just crossover:
         case 2
             %% Crossover:
@@ -38,12 +39,13 @@ while ((j < gen) && (min(par_error) > e))
             %% Evaluation:
             new_value = zeros(output_vector_len,lambda);
             for i = 1:lambda
-                new_value(:,i) = Ackley(offsprings{j+1}(:,i),u);
+                new_value(:,i) = F(offsprings{j+1}(:,i),u,f);
             end
-            off_error = abs(objective_value - new_value(1,:));
+%             offspring_fitness = abs(objective_value - new_value(1,:));
+            offspring_fitness = new_value;
             
             %% Survivor_selection
-            [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, off_error, par_error, offsprings{j+1}, xover_sigma, parents{j}, sigma, xover_alpha, alpha);
+            [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, offspring_fitness, parent_fitness, offsprings{j+1}, xover_sigma, parents{j}, sigma, xover_alpha, alpha);
         %% Just mutation:
         case 3
             %% Mutation:
@@ -53,12 +55,13 @@ while ((j < gen) && (min(par_error) > e))
             %% Evaluation:
             new_value = zeros(output_vector_len,lambda);
             for i = 1:lambda
-                new_value(:,i) = Ackley(mut_offspring(:,i),u);
+                new_value(:,i) = F(mut_offspring(:,i),u,f);
             end
-            off_error = abs(objective_value - new_value(1,:));
+%             offspring_fitness = abs(objective_value - new_value(1,:));
+            offspring_fitness = new_value;
             
             %% Survivor_selection
-            [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, off_error, par_error, mut_offspring, mut_sigma, parents{j}, sigma, mut_alpha, alpha);
+            [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, offspring_fitness, parent_fitness, mut_offspring, mut_sigma, parents{j}, sigma, mut_alpha, alpha);
         %% Probability mutation or crossover    
         case 4
             tmp = randi(100);
@@ -69,12 +72,13 @@ while ((j < gen) && (min(par_error) > e))
                 %% Evaluation:
                 new_value = zeros(output_vector_len,lambda);
                 for i = 1:lambda
-                    new_value(:,i) = Ackley(offsprings{j+1}(:,i),u);
+                    new_value(:,i) = F(offsprings{j+1}(:,i),u,f);
                 end
-                off_error = abs(objective_value - new_value(1,:));
+%                 offspring_fitness = abs(objective_value - new_value(1,:));
+                offspring_fitness = new_value;
                 
                 %% Survivor_selection
-                [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, off_error, par_error, offsprings{j+1}, xover_sigma, parents{j}, sigma, xover_alpha, alpha);
+                [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, offspring_fitness, parent_fitness, offsprings{j+1}, xover_sigma, parents{j}, sigma, xover_alpha, alpha);
             %%    
             else
                 %% Mutation:
@@ -84,12 +88,13 @@ while ((j < gen) && (min(par_error) > e))
                 %% Evaluation:
                 new_value = zeros(output_vector_len,lambda);
                 for i = 1:lambda
-                    new_value(:,i) = Ackley(mut_offspring(:,i),u);
+                    new_value(:,i) = F(mut_offspring(:,i),u,f);
                 end
-                off_error = abs(objective_value - new_value(1,:));
+%                 offspring_fitness = abs(objective_value - new_value(1,:));
+                offspring_fitness = new_value;
                 
                 %% Survivor_selection
-                [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, off_error, par_error, mut_offspring, mut_sigma, parents{j}, sigma, mut_alpha, alpha);
+                [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, offspring_fitness, parent_fitness, mut_offspring, mut_sigma, parents{j}, sigma, mut_alpha, alpha);
                 
             end
             
@@ -102,12 +107,13 @@ while ((j < gen) && (min(par_error) > e))
     %% Store better results:
     fun_values = zeros(output_vector_len,mu);               % allocate space for function evaluation
     for i = 1:mu
-        fun_values(:,i) = fun(parents{j+1}(:,i),u);
+        fun_values(:,i) = fun(parents{j+1}(:,i),u,f);
     end
     objective_fun_values{j+1} = fun_values;                 % next approximation
-    par_error = abs(objective_value - fun_values(1,:));        % error
+%     parent_fitness = abs(objective_value - fun_values(1,:));        % error
+      parent_fitness = fun_values;  
     
-    MEOEG(j+1) = min(par_error);
+    MEOEG(j+1) = min(parent_fitness);
     
     %% Stagnation criterion:
     if (MEOEG(j) == MEOEG(j+1))
@@ -119,7 +125,7 @@ while ((j < gen) && (min(par_error) > e))
     j = j+1; % Increase generation counter
     
     if (jj == sc)% Check stagnation criterion
-        fprintf('\n\n\t Error remains constant for 100 consecutive generations\n\n');
+        fprintf('\n\n\t Error remains constant for %4d consecutive generations\n\n',sc);
         break
     end
     

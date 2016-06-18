@@ -27,17 +27,13 @@ if (nargin ==8)
                 end
             end
             
-            
-            %% Intermediate crossover
+            %% Average crossover
         case 2
 %             tmp=zeros();
             for i = 1:lambda
                 tmp       = randsample(1:mu,2);
                 xover_offspring(:,i)  = parent(:,tmp(1))  + ( parent(:,tmp(2))  - parent(:,tmp(1)) )/2;
             end
-            
-            
-            
             %% No supported crossover type
         otherwise
             error('wrong crossover type');
@@ -60,8 +56,7 @@ if (nargin ==8)
                 end
             end
             
-            
-            %% Intermediate crossover
+            %% Average crossover
         case 2
             for i = 1:lambda
                 tmp       = randsample(1:mu,2);
@@ -76,8 +71,7 @@ if (nargin ==8)
                 [p,m]          = find(xover_sigma{i} <= 0);
                 xover_sigma{i}(p,m) = 0.1;
             end
-            
-            
+                      
             %% No supported crossover type
         otherwise
             error('wrong crossover type');

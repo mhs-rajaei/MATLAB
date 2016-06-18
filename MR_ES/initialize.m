@@ -1,4 +1,4 @@
-function [parents,objective_fun_values,offsprings,par_error,MEOEG,e,sigma, alpha] = initialize(mu, n, limits,gen,u,objective_value,output_vector_len,e)
+function [parents,objective_fun_values,offsprings,parent_fitness,MEOEG,e,sigma, alpha] = initialize(mu, n, limits,gen,u,output_vector_len,e,f)
 %   This function just validates the sizes of the matries init_points and sigma. Also,
 %   computes the rotation angles matrix 'alpha'.
 %
@@ -37,14 +37,15 @@ offsprings   = cell(1,gen);                  % allocate space to store the offsp
 parents{1} = init_points;                       % first point
 fun_values = zeros(output_vector_len,mu);                 % allocate space for function evaluation
 for i = 1:mu
-    fun_values(:,i) = Ackley(init_points(:,i),u);
+    fun_values(:,i) = F(init_points(:,i),u,f);
 end
 objective_fun_values{1} = fun_values;                     % first approximation
 offsprings{1}   = zeros(n,1);
 
 
-par_error    = abs(objective_value - fun_values(1,:));       % initial error
+% parent_fitness    = abs(objective_value - fun_values(1,:));       % initial error
+parent_fitness    = fun_values;       % initial fitness
 MEOEG    = zeros(gen,1);                % allocate space in memory for minimum error every generation
-MEOEG(1) = min(par_error);
+MEOEG(1) = min(parent_fitness);
 
 end
