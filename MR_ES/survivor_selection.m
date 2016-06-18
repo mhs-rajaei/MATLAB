@@ -1,8 +1,9 @@
-function [parents, min_sigma, min_alpha] = survivor_selection(scheme, mu, lambda, off_error, par_error, xm, sigmam, x0, sigma, alpham, alpha)
+function [new_parents, new_sigma, new_alpha] = survivor_selection(sel_scheme, mu, lambda, off_error, par_error, offspring, mut_sigma, parents, sigma, mut_alpha, alpha)
+
 %   This function carries out the survivor selection process in the "estrategy evolution procedure"
 
 %   INPUT DATA:
-%   - scheme: survivor selection scheme:
+%   - sel_scheme: survivor selection scheme:
 %                   ',' = (mu, lambda)-selection scheme
 %                   '+' = (mu + lambda)-selection scheme
 %   - mu:     Parent population size (positive integer number)
@@ -11,24 +12,24 @@ function [parents, min_sigma, min_alpha] = survivor_selection(scheme, mu, lambda
 %             (output_vector_len: length handle function 'f')
 %   - par_error:    par_error given by the parents population (output_vector_len x lambda matrix) - 
 %             (output_vector_len: length handle function 'f')
-%   - xm:     Mutataed individuals (n * lambda matrix)
-%   - sigmam: Mutated standard deviations (nsigma * lambda matrix)
-%   - x0:     Parents individuals (n * mu matrix)
+%   - offspring:     Mutataed individuals (n * lambda matrix)
+%   - mut_sigma: Mutated standard deviations (nsigma * lambda matrix)
+%   - parents:     Parents individuals (n * mu matrix)
 %   - sigma:  Parents standard deviations (nsigma * mu matrix)
-%   - alpham: Mutated rotation angles (nsigma * lambda matrix)
+%   - mut_alpha: Mutated rotation angles (nsigma * lambda matrix)
 %   - alpha:  Parents rotation angles (nsigma * mu matrix)
 %
 %   OUTPUT DATA:
 %
 %   - parents:     Individuals selected (n x mu matrix)
-%   - min_sigma: Covarinces of the individuals selected (1 x mu cell, each cell
+%   - new_sigma: Covarinces of the individuals selected (1 x mu cell, each cell
 %                contains an nxn symmetric matrix)
-%   - min_alpha: Rotation angles of the individuals selected (1 x mu cell, each
+%   - new_alpha: Rotation angles of the individuals selected (1 x mu cell, each
 %                cell contains an nxn symmetric matrix)
 
 
 %% Beginning
-switch scheme
+switch sel_scheme
   %% (mu, lambda)-survivor selection scheme
   case ','
     if (mu > lambda)
@@ -36,24 +37,24 @@ switch scheme
     end
     err = off_error;
     [xmin, idx] = sort(err);
-    parents       = xm(:,idx(1:mu));
-    min_sigma   = sigmam(idx(1:mu));
-    min_alpha   = alpham(idx(1:mu));
+    new_parents = offspring(:,idx(1:mu));
+    new_sigma   = mut_sigma(idx(1:mu));
+    new_alpha   = mut_alpha(idx(1:mu));
 
   %% (mu + lambda)-survivor selection scheme
   case '+'
     err         = [off_error par_error];    
-    xaug        = [xm x0];
-    sigmaaug    = [sigmam sigma];
-    alphaaug    = [alpham alpha];
+    parents_plus_offspring        = [offspring parents];
+    parents_plus_offspring_sigma    = [mut_sigma sigma];
+    parents_plus_offspring_alpha    = [mut_alpha alpha];
     [xmin, idx] = sort(err);
-    parents       = xaug(:,idx(1:mu));
-    min_sigma   = sigmaaug(idx(1:mu));
-    min_alpha   = alphaaug(idx(1:mu));
+    new_parents       = parents_plus_offspring(:,idx(1:mu));
+    new_sigma   = parents_plus_offspring_sigma(idx(1:mu));
+    new_alpha   = parents_plus_offspring_alpha(idx(1:mu));
 
   %% no suported selection scheme
   otherwise
-    error('not supported survivorselection scheme');
+    error('not supported survivor selection scheme');
 end
 
 end
