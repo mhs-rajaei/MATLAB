@@ -18,7 +18,7 @@ e     = 1e-10;              % Epsilon zero
 %%
  state    = 2;                           % States
  limits = repmat([-30 30], state, 1);    % Boundaries
- objective_value    = 0;                 % objective fun_values (f(x_min) = objective_value)
+ objective_value    = 0;                 % objective function values (f(x_min) = objective_value)
 
 %% Run "Evolutionary Strategy" (ES):
 [parents, objective_fun_values, offsprings, MEOEG,idx] = evolution_strategy(@Ackley, mu, lambda, gen, sel, xover_objective, xover_strategy, u, objective_value, output_vector_len, state, limits,e);

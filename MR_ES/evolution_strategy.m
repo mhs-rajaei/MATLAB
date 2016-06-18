@@ -1,6 +1,5 @@
 function [parents, objective_fun_values, offsprings, MEOEG,j] = evolution_strategy(fun, mu, lambda, gen, sel, xover_obj,...
     xover_strategy, u, objective_value,output_vector_len, n, limits,e)
-
 %% Initialization:
 [parents,objective_fun_values,offsprings,par_error,MEOEG,e,sigma, alpha] = initialize(mu, n, limits,gen,u,objective_value,output_vector_len,e);
 

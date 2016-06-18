@@ -1,4 +1,5 @@
-function [ new_offsprings,new_sigma,new_alphap ] = xover_and_mut(n,lambda,type_obj_or_offsprings,type_str_or_sigma,mu_or_alpha,parents_or_limits,sigma,alpha )
+function [ new_offsprings,new_sigma,new_alphap ] = xover_and_mut(n,lambda,type_obj_or_offsprings,...
+    type_str_or_sigma,mu_or_alpha,parents_or_limits,sigma,alpha )
 %% Beginning
 %% Crossover
 if (nargin ==8)
