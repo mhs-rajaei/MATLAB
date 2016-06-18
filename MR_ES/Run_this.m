@@ -15,7 +15,7 @@ xover_strategy = 1;         % Type of recombination to use on strategy parameter
 u       = 0;                % External excitation
 e     = 1e-10;              % Epsilon zero
 pm = 0.9;                   % Mutation probability
-m_xover_type = 3;           % (Crossover and Mutation:1), (Just crossover:2), (Just mutation:3), (probability mutation+crossover:4)
+m_xover_type = 3;           % (Crossover first then Mutation: 1), (Just crossover: 2), (Just mutation: 3), (probability mutation or crossover: 4)
 %%
  state    = 2;                           % States
  limits = repmat([-30 30], state, 1);    % Boundaries
