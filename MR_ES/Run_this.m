@@ -14,9 +14,10 @@ xover_objective = 2;        % Type of recombination to use on object variables(1
 xover_strategy = 1;         % Type of recombination to use on strategy parameters
 u       = 0;                % External excitation
 e     = 1e-10;              % Epsilon zero
+sc = 100;                   % Stagnation criterion
 pm = 0.9;                   % Mutation probability
-m_xover_type = 3;           % (Crossover first then Mutation: 1), (Just crossover: 2), (Just mutation: 3), (probability mutation or crossover: 4)
-%%
+m_xover_type = 2;           % (Crossover first then Mutation: 1), (Just crossover: 2), (Just mutation: 3), (probability mutation or crossover: 4)
+%% Function parameters
  state    = 2;                           % States
  limits = repmat([-30 30], state, 1);    % Boundaries
  objective_value    = 0;                 % objective function values (f(x_min) = objective_value)
@@ -24,5 +25,5 @@ m_xover_type = 3;           % (Crossover first then Mutation: 1), (Just crossove
 %% Run "Evolutionary Strategy" (ES):
 [parents, objective_fun_values, offsprings, MEOEG,idx] = evolution_strategy(@Ackley, mu, lambda,...
     gen, sel, xover_objective, xover_strategy, u, objective_value, ...
-    output_vector_len, state, limits,e,m_xover_type,pm);
+    output_vector_len, state, limits,e,sc,m_xover_type,pm);
 

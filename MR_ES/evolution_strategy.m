@@ -1,5 +1,5 @@
 function [parents, objective_fun_values, offsprings, MEOEG,j] = evolution_strategy(fun, mu, lambda, gen, sel, xover_obj,...
-    xover_strategy, u, objective_value,output_vector_len, n, limits,e,m_xover_type,pm)
+    xover_strategy, u, objective_value,output_vector_len, n, limits,e,sc,m_xover_type,pm)
 %% Initialization:
 [parents,objective_fun_values,offsprings,par_error,MEOEG,e,sigma, alpha] = initialize(mu, n, limits,gen,u,objective_value,output_vector_len,e);
 
@@ -11,8 +11,9 @@ while ((j < gen) && (min(par_error) > e))
     %% Print report:
     fprintf('\tGeneration j = %4d,  fitness = %g\n',j,min(par_error));
     
-    %%
+    %% Crossover and mutation types
     switch m_xover_type
+        %% Crossover first then Mutation:
         case 1
             %% Crossover:
             [offsprings{j+1},xover_sigma,xover_alpha] = xover_and_mut(n,lambda,xover_obj,xover_strategy,mu,parents{j},sigma,alpha);
@@ -29,7 +30,7 @@ while ((j < gen) && (min(par_error) > e))
             
             %% Survivor_selection
             [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, off_error, par_error, mut_offspring, mut_sigma, parents{j}, sigma, mut_alpha, alpha);
-            
+        %% Just crossover:
         case 2
             %% Crossover:
             [offsprings{j+1},xover_sigma,xover_alpha] = xover_and_mut(n,lambda,xover_obj,xover_strategy,mu,parents{j},sigma,alpha);
@@ -43,7 +44,7 @@ while ((j < gen) && (min(par_error) > e))
             
             %% Survivor_selection
             [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, off_error, par_error, offsprings{j+1}, xover_sigma, parents{j}, sigma, xover_alpha, alpha);
-            
+        %% Just mutation:
         case 3
             %% Mutation:
             lambda = mu;
@@ -58,7 +59,7 @@ while ((j < gen) && (min(par_error) > e))
             
             %% Survivor_selection
             [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, off_error, par_error, mut_offspring, mut_sigma, parents{j}, sigma, mut_alpha, alpha);
-            
+        %% Probability mutation or crossover    
         case 4
             tmp = randi(100);
             if ((tmp/100) > pm)
@@ -74,7 +75,7 @@ while ((j < gen) && (min(par_error) > e))
                 
                 %% Survivor_selection
                 [parents{j+1}, sigma, alpha] = survivor_selection(sel, mu, lambda, off_error, par_error, offsprings{j+1}, xover_sigma, parents{j}, sigma, xover_alpha, alpha);
-                
+            %%    
             else
                 %% Mutation:
                 lambda = mu;
@@ -94,7 +95,7 @@ while ((j < gen) && (min(par_error) > e))
             
             %% No supported mutation and crossover type
         otherwise
-            error('wrong mutation crossover type');
+            error('wrong mutation and crossover type');
     end
     
     
@@ -117,8 +118,8 @@ while ((j < gen) && (min(par_error) > e))
     
     j = j+1; % Increase generation counter
     
-    if (jj == 100)% Check stagnation criterion
-        fprintf('\n\n\tpar_error remains constant for 100 consecutive generations\n\n');
+    if (jj == sc)% Check stagnation criterion
+        fprintf('\n\n\t Error remains constant for 100 consecutive generations\n\n');
         break
     end
     
