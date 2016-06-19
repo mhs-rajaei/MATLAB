@@ -2,13 +2,9 @@
 close all;clear all;clc;
 %% Prepare Inputs:
 %% Read Images & Targets & etc
-op = strcat('Do you want to read a image or multiple image from directory?( 1 for yes and other numbers for no\n');
-one_or_multiple = input(op);
-if one_or_multiple == 1
     %% Load one images
     % read a image
     input_image=imread('F:\Documents\MATLAB\Data\Autoencoder\1.jpg');
-    
     % convert to grayscale
     input_image = rgb2gray(input_image);
     
@@ -31,25 +27,6 @@ if one_or_multiple == 1
     %% set trangnig set and training lable
     train_set = tmp';
     train_labels = tmp;
-    %% Load images in directory
-else
-    % this function read all images in a directory recursively and create
-    % two set: training set and test set
-    Data = grayscale_load_image('F:\Documents\MATLAB\Data\Airplane Images\0',...
-        15,227,227,'false','false');
-    
-    num_of_images = size(Data.training_images,3);
-    train_set = zeros(227*227,num_of_images);
-    % train_labels = zeros(num_of_images,227*227);
-    
-    for i=1:num_of_images
-        train_set(:,i) = reshape(Data.training_images(:,:,i), [1,227*227]);
-    end
-    
-    train_labels = train_set';
-    
-end
-
 
 %% input dialog
 prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','alfa:(Momentum coefficient)'...
@@ -67,76 +44,75 @@ layer = struct('Size',[],'wts',[],'a',[],'delta',[],...
     'big_delta_bias',[],'delta_W_last',[]);
 parameter = struct('learning_rate',[],'alfa',[],'lambda',[],'epsilon',[],'method',[]);
 %% =======================set paremeters==========================
-%value epsilon use for initialize random weights
+% value epsilon use for initialize random weights:
 parameter.epsilon = 0.12;
-% learning method(online or batch)
+% learning method(online or batch):
 parameter.method =str2num(answer{1});
-% learning_rate
+% learning_rate:
 parameter.learning_rate =str2num(answer{2});
-% momentum value
+% momentum value:
 parameter.alfa =str2num(answer{3});
-% regularization
+% regularization:
 parameter.lambda =str2num(answer{4});
-% epoch number(iteration)
+% epoch number(iteration):
 iteration =str2num(answer{5});
-% Number of samples
+% Number of samples;
 number_of_training_samples =str2num(answer{6});
-% number of layers
+% number of layers:
 L =str2num(answer{7});
-% batch size(for mini batch training)\n';
+% batch size(for mini batch training):
 batch_size =str2num(answer{8});
-% temp=strcat('Enter tanh(1) or sigmoid(2) (1 for tanh and 2  for sigmoid\n');
+% activation function type:
 tanh_or_sigmoid = str2num(answer{9});
-% training data
-%% ===================================================================================================
-% train_set = [number_of_input_neurons , number_of_training_samples]
-number_of_input_neurons = size(train_set,1);
 
+%% ===================================================================================================
+%% train_set = [number_of_input_neurons , number_of_training_samples]
+
+number_of_input_neurons = size(train_set,1);
+% Initialize first layers or input layer :
 layer(1).Size=number_of_input_neurons;
 layer(1).a.Size=[layer(1).Size];
 layer(1).a.Type='double';
 layer(1).a.Range=[];
 layer(1).a = zeros(layer(1).Size,number_of_training_samples);
-
+% set first layer data by train set:
 layer(1).a = train_set(1:number_of_input_neurons,1:number_of_training_samples);
 
-% set layers parameters
+% set other layer parameters, layer 2 from end
 for c=2:L
     temp=strcat('Enter numbers of nodes layer',num2str(c),'\n');
-    
+    % randomly Initialize weight of layers:
     layer(c).Size=input(temp);
     layer(c).wts.Size=[layer(c-1).Size+1,layer(c).Size];
     layer(c).wts.Type='double';
     layer(c).wts.Range=[];
     layer(c).wts = rand(layer(c-1).Size+1,layer(c).Size) * 2 * parameter.epsilon - parameter.epsilon;
-    
+    % Initialize Big DELTA of layers - (Big DELTA is notation of Backprppagation algorithm): 
     layer(c).big_delta.Size=[layer(c-1).Size+1,layer(c).Size];
     layer(c).big_delta.Type='double';
     layer(c).big_delta.Range=[];
     layer(c).big_delta = zeros(layer(c-1).Size+1,layer(c).Size);
-    
-    
+    % Initialize DELTA W last of layers - (DELTA W last is notation of momentum  :
     layer(c).delta_W_last.Size=[layer(c-1).Size+1,layer(c).Size];
     layer(c).delta_W_last.Type='double';
     layer(c).delta_W_last.Range=[];
     layer(c).delta_W_last = zeros(layer(c-1).Size+1,layer(c).Size);
-    
+    % Initialize DELTA of layers - (DELTA is notation of Backprppagation algorithm): 
     layer(c).delta.Size=[layer(c).Size];
     layer(c).delta.Type='double';
     layer(c).delta.Range=[];
     layer(c).delta=zeros(1,layer(c).Size);
-    
-    
+    % Initialize Big DELTA Bias of layers - (Big DELTA Bias is notation of Backprppagation algorithm): 
     layer(c).big_delta_bias.Size=[layer(c).Size];
     layer(c).big_delta_bias.Type='double';
     layer(c).big_delta_bias.Range=[];
     layer(c).big_delta_bias=zeros(1,layer(c).Size);
-    
+    % Initialize activation of layers: 
     layer(c).a.Size=[layer(c).Size];
     layer(c).a.Type='double';
     layer(c).a.Range=[];
     layer(c).a = zeros(1,layer(c).Size);
-    
+    % Initialize Bias  layers: 
     layer(c).bias.Size=1;
     layer(c).bias.Type='double';
     layer(c).bias.Range=[];
@@ -146,12 +122,9 @@ for c=2:L
 end
 
 %% Add mirror layer
-
 i=0;
 for c=(L+1):(2*L)
-    
-    %     layer(c) = layer(L-i);
-    
+
     layer(c).Size=layer(L-i).Size;
     layer(c).wts.Size=[layer(c-1).Size+1,layer(c).Size];
     layer(c).wts.Type='double';
@@ -163,7 +136,6 @@ for c=(L+1):(2*L)
     layer(c).big_delta.Range=[];
     layer(c).big_delta = zeros(layer(c-1).Size+1,layer(c).Size);
     
-    
     layer(c).delta_W_last.Size=[layer(c-1).Size+1,layer(c).Size];
     layer(c).delta_W_last.Type='double';
     layer(c).delta_W_last.Range=[];
@@ -173,7 +145,6 @@ for c=(L+1):(2*L)
     layer(c).delta.Type='double';
     layer(c).delta.Range=[];
     layer(c).delta=zeros(1,layer(c).Size);
-    
     
     layer(c).big_delta_bias.Size=[layer(c).Size];
     layer(c).big_delta_bias.Type='double';
@@ -190,21 +161,15 @@ for c=(L+1):(2*L)
     layer(c).bias.Range=[];
     layer(c).bias=1;
     
-    
-    
     i = i + 1 ;
 end
 
-
-%
+% for mirroring we must multiple L( number of layer) by 2
 L = 2*L;
-
-tic;
-
-%% =========== Forward and  Train MLP =============
+% delete Unnecessary and temp variable 
 clear('answer','defaultans','c','dlg_title','num_lines','one_or_multiple',...
     'op','prompt','temp','num_of_images','i');
-% Training
+%% =========== Forward and  Train Network =============
 Train;
 
 

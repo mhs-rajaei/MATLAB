@@ -43,8 +43,8 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         
         %% =========== Computing MSE  =================
         layer(L).MSE(:,num_in) = (train_labels(num_in,:) - layer(L).a).^2;
-        %% =========== Computing Delta's  =============
-        
+        %% =========== Backpropagation  =============
+        %% Computing Delta's:
         % output DELTA
         layer(L).delta = -(train_labels(num_in,:) - layer(L).a);
         
@@ -64,13 +64,13 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         end
         
         
-        %% ===========  Update Weights =============
-        %
+        %% Update Weights:  calculate BIG DELTA and ... for batch(or mini batch) method and delta W and ... for online method
         up_ind=L;
         while(up_ind>1)
-            
+            %% calculateing for layer two
             if up_ind==2
-                if parameter.method == 1 % batch method
+                if parameter.method == 1 
+                    %% batch method:
                     %% BIG DELTA Weights Batch for INPUT's(L(1))
                     layer(up_ind).big_delta(1:end-1,:) = ((layer(up_ind-1).a(:,num_in)) *...
                         layer(up_ind).delta) + ...
@@ -80,15 +80,18 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
                     layer(up_ind).big_delta_bias = layer(up_ind).delta + ...
                         layer(up_ind).big_delta_bias;
                     
-                else % online method
+                else
+                    %% online method
                     %% BIG DELTA Weights ONLINE for L(1)
                     delta_W =   ((layer(up_ind-1).a(:,num_in)) *...
                         layer(up_ind).delta);
                     delta_theta =  layer(up_ind).delta;
                 end
             else
+            %% calculateing for other layers
                 %% BIG DELTA Weights Batch for L(2)...L(L)
                 if parameter.method == 1
+                %% batch method:
                     layer(up_ind).big_delta(1:end-1,:) = (layer(up_ind-1).a' *...
                         layer(up_ind).delta) +...
                         layer(up_ind).big_delta(1:end-1,:);
@@ -97,14 +100,18 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
                     layer(up_ind).big_delta_bias = layer(up_ind).delta +...
                         layer(up_ind).big_delta_bias;
                     
-                else % online method
+                else
+                    %% online method:
                     %% BIG DELTA Weights ONLINE for L(2)...L(L)
                     delta_W = (layer(up_ind-1).a' * layer(up_ind).delta) ;%%%%%
                     delta_theta = layer(up_ind).delta ;
                 end
             end
-            %%
-            %%Update Weight's layer i or update weights from i-1 to i
+            
+            %% Update Weights: update weights for online and mini batch method 
+            
+            %% online method update weights
+            %Update Weight's layer i or update weights from i-1 to i
             if parameter.method == 0 % online method
                 % Update Weight's
                 layer(up_ind).wts(1:end-1,:) =  layer(up_ind).wts(1:end-1,:) - parameter.learning_rate .* delta_W -...
@@ -124,6 +131,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             up_ind = up_ind-1;
         end
         
+        %% mini batch method update weights
         if counter == batch_size
             if parameter.method == 1 % batch method
                 for i=2:L
@@ -186,9 +194,8 @@ tmp2 = reshape(result(:,1:dim*dim),[dim dim]);
 figure;
 imshow(tmp2);
 title('Extracted feature image');
-%%
+%% Drawing MSE
 draw_MSE(MSE);
 
-toc;
 
 
