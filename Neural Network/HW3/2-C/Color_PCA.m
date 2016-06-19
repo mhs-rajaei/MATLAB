@@ -2,7 +2,7 @@ clear all
 close all
 %%
 %% Read Images & Targets & etc
-Data = Load_Image('F:\Documents\MATLAB\Neural Network\HW3\Data\Pet Images',...
+Data = Load_Image('F:\Documents\MATLAB\Data\Pet Images',...
     15,224,224,'true','true');
 
 cd 'F:\Documents\MATLAB\Neural Network\HW3\2-C';
