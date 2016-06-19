@@ -1,45 +1,67 @@
 %% =========== Start MR_Autoencoder =============
 close all;clear all;clc;
 %% Prepare Inputs:
-
-input_image=imread('F:\Documents\MATLAB\Data\Autoencoder\1.jpg');
-input_image = rgb2gray(input_image);
-
-hight = 227;
-width = 227;
-
-image_ = imresize(input_image,[hight,width]); %resize size(fixd size);
-
-converted_image_2_double = im2double(image_);
-
-% Normalize the Image:
-im_Range = getrangefromclass(converted_image_2_double(1));
-Max_range = im_Range(2);
-Min_range = im_Range(1);
-nomalized_image = (converted_image_2_double - min(converted_image_2_double(:)))*...
-        (Max_range - Min_range)/(max(converted_image_2_double(:)) - min(converted_image_2_double(:))) + Min_range;
+%% Read Images & Targets & etc
+op = strcat('Do you want to read a image or multiple image from directory?( 1 for yes and other numbers for no\n');
+one_or_multiple = input(op);
+if one_or_multiple == 1
+    %% Load one images
+    % read a image
+    input_image=imread('F:\Documents\MATLAB\Data\Autoencoder\1.jpg');
     
-tmp = reshape(nomalized_image, [1,227*227]);
-train_set = zeros(length(tmp),10);
-
-for i=1:10
-    train_set(:,i) = tmp;
+    % convert to grayscale
+    input_image = rgb2gray(input_image);
+    
+    % set hight and width for resizing
+    hight = 227;
+    width = 227;
+    % resize image
+    image_ = imresize(input_image,[hight,width]); %resize size(fixd size);
+    % convert to double
+    converted_image_2_double = im2double(image_);
+    
+    % Normalize the Image with Min Max Normalization in boundary [0,]
+    im_Range = getrangefromclass(converted_image_2_double(1));
+    Max_range = im_Range(2);
+    Min_range = im_Range(1);
+    nomalized_image = (converted_image_2_double - min(converted_image_2_double(:)))*...
+        (Max_range - Min_range)/(max(converted_image_2_double(:)) - min(converted_image_2_double(:))) + Min_range;
+    % reshape as single vector
+    tmp = reshape(nomalized_image, [1,227*227]);
+    %% set trangnig set and training lable
+    train_set = tmp';
+    train_labels = tmp;
+    %% Load images in directory
+else
+    % this function read all images in a directory recursively and create
+    % two set: training set and test set
+    Data = grayscale_load_image('F:\Documents\MATLAB\Data\Airplane Images\0',...
+        15,227,227,'false','false');
+    
+    num_of_images = size(Data.training_images,3);
+    train_set = zeros(227*227,num_of_images);
+    % train_labels = zeros(num_of_images,227*227);
+    
+    for i=1:num_of_images
+        train_set(:,i) = reshape(Data.training_images(:,:,i), [1,227*227]);
+    end
+    
+    train_labels = train_set';
+    
 end
-train_labels = tmp;
+
+
 %% input dialog
 prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','alfa:(Momentum coefficient)'...
     ,'lambda:(Regularization coefficient)','Iteration','Number of samples',...
     'Number of layers','Batch size','tanh or sigmoid(1 for tanh -2  for sigmoid)'};
 dlg_title = 'Input';
 num_lines = 1;
-defaultans = {'0','0.3','0','0','50',num2str(size(train_set,2)),'3','10','2'};
+defaultans = {'0','0.3','0','0','100',num2str(size(train_set,2)),'3','2','2'};
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
 
 %% =========== Create MLP Layer's  =====================================================
-% struct for layers of MLP
-% layer = struct('Size',[],'wts',[],'z',[],'a',[],'delta',[],'DW',[]...
-%     ,'bias',[],'MSE',[],'delta_W',[],'delta_bias',[],'big_delta',[],...
-%     'big_delta_bias',[],'delta_W_last',[]);
+% struct of network layers
 layer = struct('Size',[],'wts',[],'a',[],'delta',[],...
     'bias',[],'MSE',[],'delta_W',[],'big_delta',[],...
     'big_delta_bias',[],'delta_W_last',[]);
@@ -77,13 +99,11 @@ layer(1).a.Range=[];
 layer(1).a = zeros(layer(1).Size,number_of_training_samples);
 
 layer(1).a = train_set(1:number_of_input_neurons,1:number_of_training_samples);
-%     clear('train_set')
-%     layer(1).a(1:layer(1).Size,1:samples) = images(1:layer(1).Size,1:samples);
 
 % set layers parameters
 for c=2:L
     temp=strcat('Enter numbers of nodes layer',num2str(c),'\n');
-
+    
     layer(c).Size=input(temp);
     layer(c).wts.Size=[layer(c-1).Size+1,layer(c).Size];
     layer(c).wts.Type='double';
@@ -100,7 +120,7 @@ for c=2:L
     layer(c).delta_W_last.Type='double';
     layer(c).delta_W_last.Range=[];
     layer(c).delta_W_last = zeros(layer(c-1).Size+1,layer(c).Size);
-
+    
     layer(c).delta.Size=[layer(c).Size];
     layer(c).delta.Type='double';
     layer(c).delta.Range=[];
@@ -121,20 +141,16 @@ for c=2:L
     layer(c).bias.Type='double';
     layer(c).bias.Range=[];
     layer(c).bias=1;
-
+    
     
 end
 
 %% Add mirror layer
-%     i=0;
-% for c=(L+1):(2*L)
-%     layer(c) = layer(L-i);
-%     i = i + 1 ;
-% end
-  i=0;
+
+i=0;
 for c=(L+1):(2*L)
     
-%     layer(c) = layer(L-i);
+    %     layer(c) = layer(L-i);
     
     layer(c).Size=layer(L-i).Size;
     layer(c).wts.Size=[layer(c-1).Size+1,layer(c).Size];
@@ -152,7 +168,7 @@ for c=(L+1):(2*L)
     layer(c).delta_W_last.Type='double';
     layer(c).delta_W_last.Range=[];
     layer(c).delta_W_last = zeros(layer(c-1).Size+1,layer(c).Size);
-
+    
     layer(c).delta.Size=[layer(c).Size];
     layer(c).delta.Type='double';
     layer(c).delta.Range=[];
@@ -180,13 +196,14 @@ for c=(L+1):(2*L)
 end
 
 
-% 
+%
 L = 2*L;
 
 tic;
 
 %% =========== Forward and  Train MLP =============
-
+clear('answer','defaultans','c','dlg_title','num_lines','one_or_multiple',...
+    'op','prompt','temp','num_of_images','i');
 % Training
 Train;
 

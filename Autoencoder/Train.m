@@ -1,4 +1,4 @@
-% mini batch   + regularization   +momentum 
+% mini batch   + regularization   +momentum
 %% =========== Forward : Computing Delta's : Update Weights =============
 delta_W=zeros();
 delta_W_last=zeros();
@@ -19,53 +19,39 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     for num_in=1:samples
         %% =========== Forward =============
         counter = counter +1;
-        %% Forward input in layers before mirror  
+        %% Forward inputs
         for c=2:L
-            % for layer 2 
+            % for layer 2
             if c==2
                 layer(c).z = (layer(c-1).a(:,num_in))'*(layer(c).wts(1:end-1,:))+(layer(c).bias*layer(c).wts(end,:));
-             % for other layers
+                % for other layers
             else
                 layer(c).z = (layer(c-1).a(:))'*(layer(c).wts(1:end-1,:))+(layer(c).bias*layer(c).wts(end,:));
             end
-            
+            % check for NaN
             if isnan(layer(c).z)
                 fprintf('\n');fprintf('\n'); fprintf('Please Change input parameter to prevent NaN in Calculation');
                 error('Error We Find NaN in Calculation!!!!!!!!!!!!!!!');
             end
-            
+            % activation function
             if tanh_or_sigmoid==1 %tanh
                 layer(c).a = tanhyp(layer(c).z);
             else %sigmoid
                 layer(c).a = sigmoid(layer(c).z);
             end
         end
-%         %% Forward input in layers after mirror  
-%         for c=((L/2)+1):L
-% 
-%             layer(c).z = (layer(c-1).a(:))'*(layer(c).wts(1:end-1,:))+(layer(c).bias*layer(c).wts(end,:));
-% 
-%             if isnan(layer(c).z)
-%                 fprintf('\n');fprintf('\n'); fprintf('Please Change input parameter to prevent NaN in Calculation');
-%                 error('Error We Find NaN in Calculation!!!!!!!!!!!!!!!');
-%             end
-%             
-%             if tanh_or_sigmoid==1 %tanh
-%                 layer(c).a = tanhyp(layer(c).z);
-%             else %sigmoid
-%                 layer(c).a = sigmoid(layer(c).z);
-%             end
-%         end
-%         
         
         %% =========== Computing MSE  =================
-        layer(L).MSE(:,num_in) = (train_labels - layer(L).a).^2;
+        layer(L).MSE(:,num_in) = (train_labels(num_in,:) - layer(L).a).^2;
         %% =========== Computing Delta's  =============
-        layer(L).delta = -(train_labels - layer(L).a);
+        
+        % output DELTA
+        layer(L).delta = -(train_labels(num_in,:) - layer(L).a);
         
         % Compute Other Delta's
         hl=L-1;
         while(hl>1)
+            % activation function
             if tanh_or_sigmoid==1 %tanh
                 layer(hl).delta = layer(hl+1).delta * (layer(hl+1).wts(1:end-1,:))' .* ...
                     tanhypGradient(layer(hl).z) ;
@@ -73,6 +59,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
                 layer(hl).delta = layer(hl+1).delta * (layer(hl+1).wts(1:end-1,:))' .* ...
                     sigmoidGradient(layer(hl).z);
             end
+            
             hl = hl-1;
         end
         
@@ -137,7 +124,6 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
             up_ind = up_ind-1;
         end
         
-        
         if counter == batch_size
             if parameter.method == 1 % batch method
                 for i=2:L
@@ -145,17 +131,16 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
                     layer(i).wts(1:end-1,:) =  layer(i).wts(1:end-1,:) - (1/batch_size) * parameter.learning_rate .* layer(i).big_delta(1:end-1,:) + ...
                         parameter.lambda * parameter.learning_rate * (layer(i).wts(1:end-1,:)) - ...
                         (parameter.alfa  *  layer(i).delta_W_last(1:end-1,:));
-                    %                 % Last DELTA W Weights
+                    % Last DELTA W Weights
                     layer(i).delta_W_last(1:end-1,:) = (1/batch_size) *layer(i).big_delta(1:end-1,:);
                     layer(i).big_delta= zeros(layer(i-1).Size+1,layer(i).Size);
-
+                    
                     % Update Bias
                     layer(i).wts(end,:) =layer(i).wts(end,:) - (1/batch_size)* parameter.learning_rate .* layer(i).big_delta_bias -...
                         (parameter.alfa  *  layer(i).delta_W_last(end,:));
-                    %               % Last DELTA W Weights
+                    % Last DELTA W Weights
                     layer(i).delta_W_last(end,:) = (1/batch_size)*layer(i).big_delta_bias;
                     layer(i).big_delta_bias=zeros(1,layer(i).Size);
-                    %                 layer(i).wts(end,:) = (1/samples)*layer(i).big_delta_bias +layer(i).wts(end,:) ;
                     
                 end
             end
@@ -164,13 +149,20 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         
     end
     
-  
-
+    
     %% Compute Overal MSE
     MSE(epoch) = (sum(layer(L).MSE(:))^0.5) / samples;
     fprintf(num2str(MSE(epoch)));
     fprintf('\n');
- 
+    
+    %% Showing Autoencoder image
+    %     result = layer(L).a;
+    %     dim = 227;
+    %     tmp2 = reshape(result,[dim dim]);
+    %     figure;
+    %     imshow(tmp2);
+    %     title('Autoencoder image');
+    %     pause;
     
 end
 
