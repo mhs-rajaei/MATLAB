@@ -8,17 +8,17 @@ fprintf('in this code I use some piece of cmaes code written by Gilberto Alejand
 output_vector_len  = 1;     % Length of the handle function vector (length(fun) x 1 vector)'fun(x,y)'
 mu  = 50;                  % Parent population size
 lambda  = 350;              % Offspring population size
-gen     =10000;               % Number of generations
+gen     =2000;               % Number of generations
 sel     = ',';              % (mu, lambda) or (mu + lambda) survivor selection sel_scheme
 xover_objective = 1;        % Type of recombination to use on object variables(1: Discrete recombination, 2: Average recombination)
 xover_strategy = 1;         % Type of recombination to use on strategy parameters
 u       = 0;                % External excitation
 e     = 1e-10;              % Epsilon zero
-sc = 1000;                   % Stagnation criterion
+sc = 500;                   % Stagnation criterion
 pm = 0.9;                   % Mutation probability
 m_xover_type =1;           % (Crossover first then Mutation: 1), (Just crossover: 2), (Just mutation: 3), (probability mutation or crossover: 4)
 %% Function parameters
-f = 5; % Function1 or F2 or F3 or F4 or F5
+f = 4; % Function1 or F2 or F3 or F4 or F5
 switch f
     case 1
         state    = 10;                           % States
