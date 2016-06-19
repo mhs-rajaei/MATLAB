@@ -1,7 +1,15 @@
 clear, clc
 %% In The Name of ALLAH
 fprintf('In The Name of ALLAH\n');
-fprintf('in this code I use some piece of cmaes code written by Gilberto Alejandro Ortiz Garcia\n ');
+% -------------------------------------------------------------------------------
+% | I modified CMA ES code Developed by:   Gilberto Alejandro Ortiz Garcia      |
+% |                 gialorga@gmail.com                                          |
+% |                 Universidad Nacional de Colombia                            |
+% |                 Manizales, Colombia.                                        |
+% -------------------------------------------------------------------------------
+
+
+fprintf('in this code I use cmaes code written by Gilberto Alejandro Ortiz Garcia\n ');
 % in this code I use some peace of cmaes code written by Gilberto Alejandro Ortiz Garcia
 %% Beginning
 %% Setting initial parameters
