@@ -286,18 +286,25 @@ end
 % set(legend,...
 %     'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
 % drawnow;
-
+%% Showing Autoencoder image
 result = layer(L).a;
-
-tmp2 = reshape(result,[227 227]);
-
+dim = 227;
+tmp2 = reshape(result,[dim dim]);
 figure;
 imshow(tmp2);
 title('Autoencoder image');
-
+%% Showing original image
 figure;
 imshow(input_image);
 title('Original image');
+
+%% Showing Extracted features
+result = layer(floor(L/2)).a;
+dim = floor(sqrt(length(layer(floor(L/2)).a)));
+tmp2 = reshape(result(:,1:dim*dim),[dim dim]);
+figure;
+imshow(tmp2);
+title('Extracted feature image');
 %%
 draw_MSE(MSE);
 
