@@ -164,12 +164,12 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
     fprintf('\n');
     
     %% Showing Autoencoder image
-    %     result = layer(L).a;
-    %     dim = 227;
-    %     tmp2 = reshape(result,[dim dim]);
-    %     figure;
-    %     imshow(tmp2);
-    %     title('Autoencoder image');
+        result = layer(L).a;
+        dim = 227;
+        tmp2 = reshape(result,[dim dim]);
+%         figure;
+        imshow(tmp2);
+        title('Autoencoder image');
     %     pause;
     
 end

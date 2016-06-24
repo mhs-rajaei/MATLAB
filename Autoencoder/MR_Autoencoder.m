@@ -2,9 +2,14 @@
 close all;clear all;clc;
 %% Prepare Inputs:
 %% Read Images & Targets & etc
+%% Load one images
+op = strcat('Do you want to read a image or multiple image from directory?( 1 for yes and other numbers for no\n');
+one_or_multiple = input(op);
+if one_or_multiple == 1
     %% Load one images
     % read a image
     input_image=imread('F:\Documents\MATLAB\Data\Autoencoder\1.jpg');
+    
     % convert to grayscale
     input_image = rgb2gray(input_image);
     
@@ -27,6 +32,25 @@ close all;clear all;clc;
     %% set trangnig set and training lable
     train_set = tmp';
     train_labels = tmp;
+    %% Load images in directory
+else
+    % this function read all images in a directory recursively and create
+    % two set: training set and test set
+    Data = grayscale_load_image('F:\Documents\MATLAB\Data\Airplane Images\0',...
+        15,227,227,'false','false');
+    
+    num_of_images = size(Data.training_images,3);
+    train_set = zeros(227*227,num_of_images);
+    % train_labels = zeros(num_of_images,227*227);
+    
+    for i=1:num_of_images
+        train_set(:,i) = reshape(Data.training_images(:,:,i), [1,227*227]);
+    end
+    
+    train_labels = train_set';
+    
+end
+
 
 %% input dialog
 prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','alfa:(Momentum coefficient)'...
@@ -37,9 +61,9 @@ num_lines = 1;
 defaultans = {'0','0.3','0','0','100',num2str(size(train_set,2)),'3','2','2'};
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
 
-%% =========== Create MLP Layer's  =====================================================
+%% =========== Create Network Layer's  =====================================================
 % struct of network layers
-layer = struct('Size',[],'wts',[],'a',[],'delta',[],...
+layer = struct('Size',[],'wts',[],'a',[],'z',[],'delta',[],...
     'bias',[],'MSE',[],'delta_W',[],'big_delta',[],...
     'big_delta_bias',[],'delta_W_last',[]);
 parameter = struct('learning_rate',[],'alfa',[],'lambda',[],'epsilon',[],'method',[]);
@@ -87,7 +111,7 @@ for c=2:L
     layer(c).wts.Type='double';
     layer(c).wts.Range=[];
     layer(c).wts = rand(layer(c-1).Size+1,layer(c).Size) * 2 * parameter.epsilon - parameter.epsilon;
-    % Initialize Big DELTA of layers - (Big DELTA is notation of Backprppagation algorithm): 
+    % Initialize Big DELTA of layers - (Big DELTA is notation of Backprppagation algorithm):
     layer(c).big_delta.Size=[layer(c-1).Size+1,layer(c).Size];
     layer(c).big_delta.Type='double';
     layer(c).big_delta.Range=[];
@@ -97,22 +121,27 @@ for c=2:L
     layer(c).delta_W_last.Type='double';
     layer(c).delta_W_last.Range=[];
     layer(c).delta_W_last = zeros(layer(c-1).Size+1,layer(c).Size);
-    % Initialize DELTA of layers - (DELTA is notation of Backprppagation algorithm): 
+    % Initialize DELTA of layers - (DELTA is notation of Backprppagation algorithm):
     layer(c).delta.Size=[layer(c).Size];
     layer(c).delta.Type='double';
     layer(c).delta.Range=[];
     layer(c).delta=zeros(1,layer(c).Size);
-    % Initialize Big DELTA Bias of layers - (Big DELTA Bias is notation of Backprppagation algorithm): 
+    % Initialize Big DELTA Bias of layers - (Big DELTA Bias is notation of Backprppagation algorithm):
     layer(c).big_delta_bias.Size=[layer(c).Size];
     layer(c).big_delta_bias.Type='double';
     layer(c).big_delta_bias.Range=[];
     layer(c).big_delta_bias=zeros(1,layer(c).Size);
-    % Initialize activation of layers: 
+    % Initialize activation of layers:
     layer(c).a.Size=[layer(c).Size];
     layer(c).a.Type='double';
     layer(c).a.Range=[];
     layer(c).a = zeros(1,layer(c).Size);
-    % Initialize Bias  layers: 
+    % Initialize z of layers:
+    layer(c).z.Size=[layer(c).Size];
+    layer(c).z.Type='double';
+    layer(c).z.Range=[];
+    layer(c).z = zeros(1,layer(c).Size);
+    % Initialize Bias  layers:
     layer(c).bias.Size=1;
     layer(c).bias.Type='double';
     layer(c).bias.Range=[];
@@ -124,7 +153,7 @@ end
 %% Add mirror layer
 i=0;
 for c=(L+1):(2*L)
-
+    
     layer(c).Size=layer(L-i).Size;
     layer(c).wts.Size=[layer(c-1).Size+1,layer(c).Size];
     layer(c).wts.Type='double';
@@ -155,6 +184,11 @@ for c=(L+1):(2*L)
     layer(c).a.Type='double';
     layer(c).a.Range=[];
     layer(c).a = zeros(1,layer(c).Size);
+
+    layer(c).z.Size=[layer(c).Size];
+    layer(c).z.Type='double';
+    layer(c).z.Range=[];
+    layer(c).z = zeros(1,layer(c).Size);
     
     layer(c).bias.Size=1;
     layer(c).bias.Type='double';
@@ -166,19 +200,11 @@ end
 
 % for mirroring we must multiple L( number of layer) by 2
 L = 2*L;
-% delete Unnecessary and temp variable 
+% delete Unnecessary and temp variable
 clear('answer','defaultans','c','dlg_title','num_lines','one_or_multiple',...
     'op','prompt','temp','num_of_images','i');
 %% =========== Forward and  Train Network =============
 Train;
-
-
-
-
-
-
-
-
 
 
 
