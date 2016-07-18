@@ -32,7 +32,8 @@ W_randoms = zeros(M,L);
 biases = zeros(M,1);
 switch Flags(2)
     case 1
-        W_randoms = sign(randn(M,L)); %get bipolar random weights
+%         W_randoms = sign(randn(M,L)); %get bipolar random weights
+        W_randoms = rand(M,size(X,1)) * 2 * 0.25 - 0.25;
         W_randoms =  Mask.*W_randoms; %mask random weights
         W_randoms = Scaling*diag(1./sqrt(eps+sum(W_randoms.^2,2)))*W_randoms; %normalise rows and scale
     case 2
@@ -46,11 +47,13 @@ switch Flags(2)
         Count = 1;
         for i = 1:NumClasses
             ClassIndices = find(labels==i-1);
-            W_randoms(Count:Count+M_CIWs(i)-1,:) = sign(randn(M_CIWs(i),length(ClassIndices)))*X(:,ClassIndices)';
+%           W_randoms(Count:Count+M_CIWs(i)-1,:) = sign(randn(M_CIWs(i),length(ClassIndices)))*X(:,ClassIndices)';
+            W_randoms(Count:Count+M_CIWs(i)-1,:) = (rand(M_CIWs(i),length(ClassIndices)) * 2 * 0.25 - 0.25) *X(:,ClassIndices)';            
             Count = Count + M_CIWs(i);
         end
         W_randoms =  Mask.*W_randoms; %mask random weights
         W_randoms = Scaling*diag(1./sqrt(eps+sum(W_randoms.^2,2)))*W_randoms; %normalise rows and scale
+        biases = ones(1600,1);
     case 3
         %Get the Constrained weights
         for i = 1:M

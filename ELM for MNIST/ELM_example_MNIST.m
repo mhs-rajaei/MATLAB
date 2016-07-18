@@ -37,12 +37,12 @@ RidgeParam = 1e-8; %ridge regression parameter
 %set receptive field hyperparameters
 MinMaskSize = 10; %parameter for  receptive fields
 RF_Border = 3; %parameter for receptive fields
-UseReceptiveFields = 1; %use receptive fields or not
+UseReceptiveFields = 0; %use receptive fields or not - Flag(1)
 
 %control choice of ELM
 StandardELM = 1;
 CIW_ELM = 2;
-C_ELM = 3;
+C_ELM = 1;% Flag(2)
 
 %specify RF-C-ELM mode
 Flags = [UseReceptiveFields,C_ELM];
@@ -65,7 +65,7 @@ Y_predicted_test = W_out*(1./(1+exp(-W_in*X_test))); %get output layer response
 [MaxVal,ClassificationID_test] = max(Y_predicted_test); %get classification
 PercentCorrect_test = 100*(1-length(find(ClassificationID_test-1-labels_test'~=0))/length(labels_test))
 
-UseBackprop = 0;
+UseBackprop = 1;
 
 if UseBackprop
     
