@@ -64,8 +64,12 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         layer(L).MSE(:,num_in) = (target - layer(L).a).^2;
         %% =========== Backpropagation  =============
         %% Computing Delta's:
-        % output DELTA
-        layer(L).delta = -(target - layer(L).a);;
+        % Output DELTA
+        if tanh_or_sigmoid==1 %tanh
+                layer(L).delta = -(target - layer(L).a).*tanhypGradient(layer(L).z) ;
+        else %sigmoid
+                layer(L).delta = -(target - layer(L).a).*sigmoidGradient(layer(L).z);
+        end
         
         % Compute Other Delta's
         hl=L-1;

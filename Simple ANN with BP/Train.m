@@ -15,8 +15,8 @@ tsamples = size(test_set,2);
 
 index = 1;
 MSE = zeros(1,iteration);
-layer(L).MSE = zeros(10,samples);
-% layer(L).MSE2 = zeros(10,samples);
+layer(L).MSE = zeros(2,samples);
+% layer(L).MSE2 = zeros(2,samples);
 counter = 0;
 
 % Create figure

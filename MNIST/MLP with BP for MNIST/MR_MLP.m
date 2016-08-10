@@ -27,6 +27,11 @@ validation_labels = labels(idx);
 
 images(:,idx) = [];
 labels(idx) = [];
+
+idx = randperm(50000,50000);
+images = images(:,idx);
+labels = labels(idx,:);
+
 %% Inputs from user
 prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','alfa:(Momentum coefficient)'...
     ,'lambda:(Regularization coefficient)','Validation check','Iteration','Number of training_samples',...
@@ -34,7 +39,7 @@ prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','
     'tanh or sigmoid(1 for tanh -2  for sigmoid)'};
 dlg_title = 'Input';
 num_lines = 1;
-defaultans = {'1','0.3','0.9','0','100','100',num2str(size(images,2)),'3','100','3','2'};
+defaultans = {'1','0.2','0.9','0','50','50',num2str(size(images,2)),'4','100','3','2'};
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
 %% =========== Create Network Layer's  =====================================================
 % struct of network layers
@@ -74,6 +79,7 @@ if number_of_training_samples<=50000
     samples = number_of_training_samples;
 else
     number_of_training_samples = 50000;
+    samples = number_of_training_samples;
 end
 % Enter the number of layers
 L =str2num(answer{8});

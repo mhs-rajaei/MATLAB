@@ -16,7 +16,7 @@ prompt = {'Method:(1 for Batch method - 0 for Online method)','Learning rate:','
     'Number of layers','Batch size','tanh or sigmoid(1 for tanh -2  for sigmoid)'};
 dlg_title = 'Input';
 num_lines = 1;
-defaultans = {'1','0.2','0','0','500',num2str(size(train_set,2)),'3','100','2'};
+defaultans = {'1','0.2','0','0','100',num2str(size(train_set,2)),'3','100','2'};
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans);
 
 %% =========== Create Network Layer's  =====================================================

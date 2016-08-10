@@ -82,7 +82,12 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         % =========== Computing MSE  =================
         layer(L).MSE(:,num_in) = (target - layer(L).a).^2;
         %% =========== Computing Delta's  =============
-        layer(L).delta = -(target - layer(L).a);
+        %output DELTA
+        if tanh_or_sigmoid==1 %tanh
+            layer(L).delta = -(target - layer(L).a).*tanhypGradient(layer(L).z) ;
+        else %sigmoid
+            layer(L).delta = -(target - layer(L).a).*sigmoidGradient(layer(L).z);
+        end
         %         if tanh_or_sigmoid==1 %tanh
         %             layer(L).delta = -(target - layer(L).a) .* ...
         %                 tanhypGradient(layer(L).z) ;
@@ -222,7 +227,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         % Create multiple lines using matrix input to plot
         plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
         set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
-            'Color',[0.600000023841858 0.200000002980232 0]);
+            'Color',[0.6 0.2 0]);
         
         plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
         set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
@@ -238,7 +243,7 @@ for epoch=1:iteration % forward and update weight's in number of  iterations
         % Create legend
         legend('show');
         set(legend,...
-            'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
+            'Position',[0.14 0.82 0.12 0.08]);
         drawnow
     end
     
@@ -301,7 +306,7 @@ end
 % Create multiple lines using matrix input to plot
 plot1 = plot(Accuracy_Train(1:epoch-1));hold on;
 set(plot1,'DisplayName','Accuracy Train','LineWidth',4,'LineStyle',':',...
-    'Color',[0.600000023841858 0.200000002980232 0]);
+    'Color',[0.6 0.2 0]);
 plot2 = plot(Accuracy_Test(1:epoch-1));hold on;
 set(plot2,'DisplayName','Accuracy Test','LineWidth',3,'Color',[0 1 0]);
 plot3 = plot(Accuracy_Validation(1:epoch-1));hold on;
@@ -312,7 +317,7 @@ set(axes1,'XGrid','on','YGrid','on');
 % Create legend
 legend('show');
 set(legend,...
-    'Position',[0.139580285377526 0.818740401582967 0.118594433997767 0.0839733720985485]);
+    'Position',[0.14 0.82 0.12 0.08]);
 drawnow;
 
 draw_MSE(MSE);
